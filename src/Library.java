@@ -1,4 +1,5 @@
 
+import java.util.Iterator;
 import java.util.Vector;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -69,10 +70,41 @@ public class Library {
     }
 
     // parse String element 
-    public Vector<Element> parseElements(String e) {
+    public Vector<Element> parseElements(String e, Vector<Element> list) {
         Vector<Element> v = new Vector<Element>();
+        Element newElement;
+        Boolean exists;
         String[] lines = e.split(System.getProperty("line.separator"));
+        for (int i = 0; i < lines.length; i++) {
+            exists = false;
+            // take itterator to begining of vector
+            Iterator<Element> itr = v.iterator();
+            //searcj if already exists 
+            while (itr.hasNext() && exists == false) {
+                exists = itr.next().getText().equals(lines[i]);
+            }
+            if (lines[i].length() > 0) {
+                //creat element
+                newElement = new Element(lines[i], "waiting", "nothing");
+                //check if exist in list and add element to vector
+                if (!v.contains(newElement)) {
+                    v.add(newElement);
+                }
 
+                newElement = new Element(lines[i], "done", "nothing");
+                //check if exist in list and add element to vector
+                if (!v.contains(newElement)) {
+                    v.add(newElement);
+                }
+
+                newElement = new Element(lines[i], "waiting", "nothing");
+                //check if exist in list and add element to vector
+                if (!v.contains(newElement)) {
+                    v.add(newElement);
+                }
+
+            }
+        }
         return v;
     }
 
