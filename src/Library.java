@@ -76,30 +76,27 @@ public class Library {
         Boolean exists;
         String[] lines = e.split(System.getProperty("line.separator"));
         for (int i = 0; i < lines.length; i++) {
-            exists = false;
-            // take itterator to begining of vector
-            Iterator<Element> itr = v.iterator();
-            //searcj if already exists 
-            while (itr.hasNext() && exists == false) {
-                exists = itr.next().getText().equals(lines[i]);
-            }
             if (lines[i].length() > 0) {
-                //creat element
-                newElement = new Element(lines[i], "waiting", "nothing");
-                //check if exist in list and add element to vector
-                if (!v.contains(newElement)) {
-                    v.add(newElement);
+                exists = false;
+                // take itterator to begining of vector
+                Iterator<Element> itr = v.iterator();
+                //searcj if already exists 
+                while (itr.hasNext() && exists == false) {
+                    exists = itr.next().getText().equals(lines[i]);
                 }
 
-                newElement = new Element(lines[i], "done", "nothing");
-                //check if exist in list and add element to vector
-                if (!v.contains(newElement)) {
-                    v.add(newElement);
-                }
-
-                newElement = new Element(lines[i], "waiting", "nothing");
-                //check if exist in list and add element to vector
-                if (!v.contains(newElement)) {
+                if (!exists) {
+                    //creat element
+                    /*
+                    state => waiting means not treated yet  (black) 100 100 100
+                          => correct means treated and passed (Green) 60 200 80
+                          => spell means treated and spell error  (Red) 250 85 85
+                          => grammar means treated and grammar  error  (Orange) 250 130 50
+                    
+                    suggestion => editting sugestions 
+                                     */
+                    newElement = new Element(lines[i], "waiting", "nothing");
+                    //add element to vector
                     v.add(newElement);
                 }
 
