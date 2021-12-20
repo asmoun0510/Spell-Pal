@@ -71,21 +71,22 @@ public class Library {
 
     // parse String element 
     public Vector<Element> parseElements(String e, Vector<Element> list) {
-        Vector<Element> v = new Vector<Element>();
         Element newElement;
         Boolean exists;
         String[] lines = e.split(System.getProperty("line.separator"));
         for (int i = 0; i < lines.length; i++) {
+            System.out.println(lines[i]);
             if (lines[i].length() > 0) {
                 exists = false;
                 // take itterator to begining of vector
-                Iterator<Element> itr = v.iterator();
+                Iterator<Element> itr = list.iterator();
                 //searcj if already exists 
                 while (itr.hasNext() && exists == false) {
                     exists = itr.next().getText().equals(lines[i]);
                 }
 
                 if (!exists) {
+                    System.out.println("not ecist");
                     //creat element
                     /*
                     state => waiting means not treated yet  (black) 100 100 100
@@ -94,15 +95,15 @@ public class Library {
                           => grammar means treated and grammar  error  (Orange) 250 130 50
                     
                     suggestion => editting sugestions 
-                                     */
+                     */
                     newElement = new Element(lines[i], "waiting", "nothing");
                     //add element to vector
-                    v.add(newElement);
+                    list.add(newElement);
                 }
 
             }
         }
-        return v;
+        return list;
     }
 
 }

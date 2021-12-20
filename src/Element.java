@@ -12,9 +12,9 @@ import java.util.Objects;
  */
 public class Element {
 
-    String text;
-    String state;
-    String suggest;
+    String text = "";
+    String state = "";
+    String suggest = "";
 
     public Element(String text, String state, String suggest) {
         this.text = text;

@@ -40,8 +40,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Button buttonRun;
     @FXML
-    private TextField inputUrl;
-    @FXML
     private Label labelParsed;
     @FXML
     private Label labelState;
@@ -90,23 +88,29 @@ public class FXMLDocumentController implements Initializable {
             Thread threadBrowse = new Thread() {
                 public void run() {
                     //  start browser for user
-                    driverBrowser = lib.initilizeBrowser(driverBrowser, inputUrl.getText());
+                    String newPage, contentPage;
+                    driverBrowser = lib.initilizeBrowser(driverBrowser, "www.google.com");
                     String initialPage = lib.getSourcePage(driverBrowser);
                     Text text;
                     while (true) {
                         try {
-                            Thread.sleep(250);
-                            String newPage = lib.getSourcePage(driverBrowser);
+                            Thread.sleep(50);
+                            newPage = lib.getSourcePage(driverBrowser);
 
                             if (!initialPage.equals(newPage)) {
-                                String contentPage = lib.getContentPage(driverBrowser);
+                                contentPage = lib.getContentPage(driverBrowser);
                                 webElements = lib.parseElements(contentPage, webElements);
+                                System.out.print(webElements.size() + "rrrr");
                                 //clear Gui
-                                areaResult.getChildren().clear();
-                                Iterator<Element> itr = webElements.iterator();
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        areaResult.getChildren().clear();
+                                    }
+                                });
 
-                                while (itr.hasNext()) {
-                                    text = new Text("\n etat : " + itr.next().getState() + " / suggestion : " + itr.next().getSuggest() + "  => " + itr.next().getText());
+                                for (int w = 0; w < webElements.size(); w++) {
+                                    text = new Text("\n etat : " + webElements.elementAt(w).getState() + " / suggestion : " + webElements.elementAt(w).getSuggest() + "  => " + webElements.elementAt(w).getText());
                                     text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
                                     /*
                     state => waiting means not treated yet  (black) 100 100 100
@@ -116,18 +120,24 @@ public class FXMLDocumentController implements Initializable {
                     
                     suggestion => editting sugestions 
                                      */
-                                    if (itr.next().getState().equals("waiting")) {
+                                    if (webElements.elementAt(w).getState().equals("waiting")) {
                                         text.setFill(Color.rgb(100, 100, 100));
-                                    } else if (itr.next().getState().equals("correct")) {
+                                    } else if (webElements.elementAt(w).getState().equals("correct")) {
                                         text.setFill(Color.rgb(60, 200, 80));
-                                    } else if (itr.next().getState().equals("spell")) {
+                                    } else if (webElements.elementAt(w).getState().equals("spell")) {
                                         text.setFill(Color.rgb(250, 85, 85));
-                                    } else if (itr.next().getState().equals("grammar")) {
+                                    } else if (webElements.elementAt(w).getState().equals("grammar")) {
                                         text.setFill(Color.rgb(250, 130, 50));
                                     }
                                     Text tempText = text;
                                     //update new Gui
-                                    areaResult.getChildren().add(tempText);
+
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            areaResult.getChildren().add(tempText);
+                                        }
+                                    });
 
                                 }
 
