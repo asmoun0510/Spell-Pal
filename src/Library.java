@@ -73,10 +73,11 @@ public class Library {
     public Vector<Element> parseElements(String e, Vector<Element> list) {
         Element newElement;
         Boolean exists;
-        String[] lines = e.split(System.getProperty("line.separator"));
+        System.out.println (e);
+        String[] lines = e.split("[\\r\\n]+");
         for (int i = 0; i < lines.length; i++) {
-            System.out.println(lines[i]);
-            if (lines[i].length() > 0) {
+          //  System.out.println(lines[i]);
+            if (lines[i].length() > 0 ) {
                 exists = false;
                 // take itterator to begining of vector
                 Iterator<Element> itr = list.iterator();
@@ -86,7 +87,7 @@ public class Library {
                 }
 
                 if (!exists) {
-                    System.out.println("not ecist");
+                    
                     //creat element
                     /*
                     state => waiting means not treated yet  (black) 100 100 100

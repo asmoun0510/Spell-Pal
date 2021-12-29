@@ -94,9 +94,8 @@ public class FXMLDocumentController implements Initializable {
                     Text text;
                     while (true) {
                         try {
-                            Thread.sleep(50);
+                            Thread.sleep(500);
                             newPage = lib.getSourcePage(driverBrowser);
-
                             if (!initialPage.equals(newPage)) {
                                 contentPage = lib.getContentPage(driverBrowser);
                                 webElements = lib.parseElements(contentPage, webElements);
@@ -110,7 +109,7 @@ public class FXMLDocumentController implements Initializable {
                                 });
 
                                 for (int w = 0; w < webElements.size(); w++) {
-                                    text = new Text("\n etat : " + webElements.elementAt(w).getState() + " / suggestion : " + webElements.elementAt(w).getSuggest() + "  => " + webElements.elementAt(w).getText());
+                                    text = new Text("\n "+webElements.elementAt(w).getText());
                                     text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
                                     /*
                     state => waiting means not treated yet  (black) 100 100 100
@@ -140,10 +139,10 @@ public class FXMLDocumentController implements Initializable {
                                     });
 
                                 }
-
+                                initialPage = newPage;
                                 //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
                             } else {
-                                System.out.println("no changes");
+                               
                             }
                         } catch (InterruptedException ex) {
                             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
