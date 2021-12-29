@@ -38,8 +38,8 @@ public class Library {
         return driver;
     }
 
-    // start scribensin headless mode
-    public WebDriver initilizeScribens(WebDriver driverScribens) {
+    // start Reversoin headless mode
+    public WebDriver initilizeReverso(WebDriver driverReverso) {
         ChromeOptions optionsHeadless = new ChromeOptions();
         optionsHeadless.addArguments("--start-maximized");
         optionsHeadless.addArguments("--disable-extensions");
@@ -48,9 +48,9 @@ public class Library {
         optionsHeadless.addArguments("--no-sandbox");
         optionsHeadless.addArguments("--ignore-certificate-errors");
         // optionsHeadless.addArguments("--headless");
-        driverScribens = new ChromeDriver(optionsHeadless);
-        driverScribens.get("https://www.scribens.com/");
-        return driverScribens;
+        driverReverso = new ChromeDriver(optionsHeadless);
+        driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+        return driverReverso;
     }
 
     // return text elements of a web page
@@ -105,6 +105,22 @@ public class Library {
             }
         }
         return list;
+    }
+    
+    
+    public String getSugesstion(String e) {
+        String result ;
+       
+        result = e.replaceAll("<p ", "") ;
+        result = result.replaceAll("</p><p>", " / ") ;
+        result = result.replaceAll("<span class=\"mistake-text auto-corrected\">", "") ;
+        result = result.replaceAll("class=\"tooltip-title auto-correction\">", "") ;
+        result = result.replaceAll("</p><p class=\"more-details\"><span>Click to see more suggestions</span></p>", "") ;
+        result = e.replaceAll("</span> ", "") ;
+        result = result.replaceAll("<span class=\"correction-text\">", "") ;
+        result = result.replaceAll("<span class=\"definition\">", "") ;
+       
+        return result;
     }
 
 }

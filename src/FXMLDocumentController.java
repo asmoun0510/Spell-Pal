@@ -6,6 +6,7 @@
 
 import java.net.URL;
 import java.util.Iterator;
+import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
 import java.util.concurrent.ExecutorService;
@@ -24,9 +25,13 @@ import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedConditions;
+import org.openqa.selenium.support.ui.WebDriverWait;
 
 /**
  * FXML Controller class
@@ -57,7 +62,7 @@ public class FXMLDocumentController implements Initializable {
     Library lib = new Library();
     ObservableList<Text> green = null, orange = null, red = null, black = null;
     Thread satrtsingle;
-    WebDriver driverScribens, driverBrowser;
+    WebDriver driverReverso, driverBrowser;
     Vector<Element> webElements = new Vector<Element>();
 
     @Override
@@ -109,7 +114,7 @@ public class FXMLDocumentController implements Initializable {
                                 });
 
                                 for (int w = 0; w < webElements.size(); w++) {
-                                    text = new Text("\n "+webElements.elementAt(w).getText());
+                                    text = new Text("\n " + webElements.elementAt(w).getText());
                                     text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
                                     /*
                     state => waiting means not treated yet  (black) 100 100 100
@@ -123,9 +128,9 @@ public class FXMLDocumentController implements Initializable {
                                         text.setFill(Color.rgb(100, 100, 100));
                                     } else if (webElements.elementAt(w).getState().equals("correct")) {
                                         text.setFill(Color.rgb(60, 200, 80));
-                                    } else if (webElements.elementAt(w).getState().equals("spell")) {
+                                    } else if (webElements.elementAt(w).getState().equals("wrong")) {
                                         text.setFill(Color.rgb(250, 85, 85));
-                                    } else if (webElements.elementAt(w).getState().equals("grammar")) {
+                                    } else if (webElements.elementAt(w).getState().equals("processing")) {
                                         text.setFill(Color.rgb(250, 130, 50));
                                     }
                                     Text tempText = text;
@@ -142,7 +147,7 @@ public class FXMLDocumentController implements Initializable {
                                 initialPage = newPage;
                                 //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
                             } else {
-                               
+
                             }
                         } catch (InterruptedException ex) {
                             Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
@@ -152,14 +157,93 @@ public class FXMLDocumentController implements Initializable {
                 }
             };
 
-            Thread threadScribens = new Thread() {
-                //  start browser and visit Scribens  
+            Thread threadReverso = new Thread() {
+                //  start browser and visit Reverso  
                 public void run() {
-                    driverScribens = lib.initilizeScribens(driverScribens);
+                    driverReverso = lib.initilizeReverso(driverReverso);
+                    WebDriverWait wait = new WebDriverWait(driverReverso, 50);
+                    wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
+
+                    Text text;
+                    while (true) {
+                        try {
+                            Thread.sleep(500);
+                            for (int j = 0; j < webElements.size(); j++) {
+                                if (webElements.get(j).state.equals("waiting")) {
+                                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("startText"))).sendKeys(webElements.get(j).text);
+                                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
+                                    webElements.get(j).setState("processing");
+                                    Thread.sleep(1000);
+                                  //  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
+                                    List<WebElement> mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                    if (!mistakes.isEmpty()) {
+                                        String suggestion = "";
+                                        for (int m = 0; m < mistakes.size(); m++) {
+                                            suggestion = suggestion + lib.getSugesstion(mistakes.get(m).getAttribute("tooltip"));
+                                        }
+                                        webElements.get(j).setState("wrong");
+                                        webElements.get(j).setSuggest(suggestion);
+                                    } else {
+                                        webElements.get(j).setState("correct");
+                                    }
+
+                                }
+                                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnEdit"))).click();
+
+                            }
+
+                            System.out.print(webElements.size() + "rrrr");
+                            //clear Gui
+                            Platform.runLater(new Runnable() {
+                                @Override
+                                public void run() {
+                                    areaResult.getChildren().clear();
+                                }
+                            });
+
+                            for (int w = 0; w < webElements.size(); w++) {
+                                text = new Text("\n " + webElements.elementAt(w).getText());
+                                text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+                                /*
+                    state => waiting means not treated yet  (black) 100 100 100
+                          => correct means treated and passed (Green) 60 200 80
+                          => spell means treated and spell error  (Red) 250 85 85
+                          => grammar means treated and grammar  error  (Orange) 250 130 50
+                    
+                    suggestion => editting sugestions 
+                                 */
+                                if (webElements.elementAt(w).getState().equals("waiting")) {
+                                    text.setFill(Color.rgb(100, 100, 100));
+                                } else if (webElements.elementAt(w).getState().equals("correct")) {
+                                    text.setFill(Color.rgb(60, 200, 80));
+                                } else if (webElements.elementAt(w).getState().equals("wrong")) {
+                                    text.setFill(Color.rgb(250, 85, 85));
+                                } else if (webElements.elementAt(w).getState().equals("processing")) {
+                                    text.setFill(Color.rgb(250, 130, 50));
+                                }
+                                Text tempText = text;
+
+                                //update new Gui
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        areaResult.getChildren().add(tempText);
+                                    }
+                                });
+
+                            }
+
+                            //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
+                        } catch (InterruptedException ex) {
+                            Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                        }
+
+                    }
+
                 }
             };
 
-            threadScribens.start();
+            threadReverso.start();
             threadBrowse.start();
 
         }

@@ -28,6 +28,7 @@ public class Element {
     }
 
     public void setState(String state) {
+        // waiting // processing // correct // wrong
         this.state = state;
     }
 
