@@ -5,11 +5,9 @@
  */
 
 import java.net.URL;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
-import java.util.concurrent.ExecutorService;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
@@ -21,15 +19,12 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -41,8 +36,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class FXMLDocumentController implements Initializable {
 
     @FXML
-    private Label label;
-    @FXML
     private Button buttonRun;
     @FXML
     private Label labelParsed;
@@ -51,9 +44,7 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label labelCorrect;
     @FXML
-    private Label labelSpell;
-    @FXML
-    private Label labelGrammar;
+    private Label labelError;
     @FXML
     private ScrollPane scrollPane;
     @FXML
@@ -73,10 +64,9 @@ public class FXMLDocumentController implements Initializable {
         red = FXCollections.observableArrayList();
         black = FXCollections.observableArrayList();
 
-        labelCorrect.setText("Number of correct  elements : 0");
-        labelSpell.setText("Number of spell erros : 0");
-        labelGrammar.setText("Number of Grammar errors : 0");
-        labelParsed.setText("Number of elements parsed : 0");
+        labelCorrect.setText("Nombre Correcte : 0");
+        labelError.setText("Nombre Erreur : 0");
+        labelParsed.setText("Nombre Total : 0");
 
         System.setProperty("webdriver.chrome.driver", "C:\\Users\\asmou\\Documents\\NetBeansProjects\\Beyn_Spell\\src\\dependencies\\chromedriver.exe");
 
@@ -104,7 +94,7 @@ public class FXMLDocumentController implements Initializable {
                             if (!initialPage.equals(newPage)) {
                                 contentPage = lib.getContentPage(driverBrowser);
                                 webElements = lib.parseElements(contentPage, webElements);
-                                System.out.print(webElements.size() + "rrrr");
+                                //System.out.print(webElements.size() + "rrrr");
                                 //clear Gui
                                 Platform.runLater(new Runnable() {
                                     @Override
@@ -114,14 +104,18 @@ public class FXMLDocumentController implements Initializable {
                                 });
 
                                 for (int w = 0; w < webElements.size(); w++) {
-                                    text = new Text("\n " + webElements.elementAt(w).getText());
+                                    String myString;
+                                    myString = "\n " + webElements.elementAt(w).getText();
+                                    if (webElements.elementAt(w).getState().equals("error")) {
+                                        myString = myString + " => " + webElements.elementAt(w).getSuggest();
+                                    }
+                                    text = new Text(myString);
                                     text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
                                     /*
-                    state => waiting means not treated yet  (black) 100 100 100
+                          state => waiting means not treated yet  (black) 100 100 100
                           => correct means treated and passed (Green) 60 200 80
                           => spell means treated and spell error  (Red) 250 85 85
-                          => grammar means treated and grammar  error  (Orange) 250 130 50
-                    
+                         
                     suggestion => editting sugestions 
                                      */
                                     if (webElements.elementAt(w).getState().equals("waiting")) {
@@ -130,8 +124,6 @@ public class FXMLDocumentController implements Initializable {
                                         text.setFill(Color.rgb(60, 200, 80));
                                     } else if (webElements.elementAt(w).getState().equals("wrong")) {
                                         text.setFill(Color.rgb(250, 85, 85));
-                                    } else if (webElements.elementAt(w).getState().equals("processing")) {
-                                        text.setFill(Color.rgb(250, 130, 50));
                                     }
                                     Text tempText = text;
                                     //update new Gui
@@ -170,16 +162,23 @@ public class FXMLDocumentController implements Initializable {
                             Thread.sleep(500);
                             for (int j = 0; j < webElements.size(); j++) {
                                 if (webElements.get(j).state.equals("waiting")) {
+                                    Thread.sleep(500);
+                                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnClear"))).click();
+                                    Thread.sleep(500);
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("startText"))).sendKeys(webElements.get(j).text);
+                                    Thread.sleep(500);
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
-                                    webElements.get(j).setState("processing");
-                                    Thread.sleep(1000);
-                                  //  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
+                                    Thread.sleep(500);
+                                    //  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
                                     List<WebElement> mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
                                     if (!mistakes.isEmpty()) {
+                                        System.out.println(mistakes.size() + "/");
                                         String suggestion = "";
                                         for (int m = 0; m < mistakes.size(); m++) {
+                                            System.out.println(mistakes.get(m).getAttribute("tooltip"));
+                                            System.out.println("init sug" + suggestion);
                                             suggestion = suggestion + lib.getSugesstion(mistakes.get(m).getAttribute("tooltip"));
+                                            System.out.println("last sug" + suggestion);
                                         }
                                         webElements.get(j).setState("wrong");
                                         webElements.get(j).setSuggest(suggestion);
@@ -188,22 +187,25 @@ public class FXMLDocumentController implements Initializable {
                                     }
 
                                 }
-                                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnEdit"))).click();
+                                //System.out.print(webElements.size() + "rrrr");
+                                //clear Gui
+                                Platform.runLater(new Runnable() {
+                                    @Override
+                                    public void run() {
+                                        areaResult.getChildren().clear();
+                                    }
+                                });
 
-                            }
+                                for (int w = 0; w < webElements.size(); w++) {
 
-                            System.out.print(webElements.size() + "rrrr");
-                            //clear Gui
-                            Platform.runLater(new Runnable() {
-                                @Override
-                                public void run() {
-                                    areaResult.getChildren().clear();
-                                }
-                            });
-
-                            for (int w = 0; w < webElements.size(); w++) {
-                                text = new Text("\n " + webElements.elementAt(w).getText());
-                                text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+                                    String myString;
+                                    myString = "\n " + webElements.elementAt(w).getText();
+                                    if (webElements.elementAt(w).getState().equals("wrong")) {
+                                        myString = myString + " => " + webElements.elementAt(w).getSuggest();
+                                    }
+                                    text = new Text(myString);
+                                    text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+                                    /*
                                 /*
                     state => waiting means not treated yet  (black) 100 100 100
                           => correct means treated and passed (Green) 60 200 80
@@ -211,25 +213,25 @@ public class FXMLDocumentController implements Initializable {
                           => grammar means treated and grammar  error  (Orange) 250 130 50
                     
                     suggestion => editting sugestions 
-                                 */
-                                if (webElements.elementAt(w).getState().equals("waiting")) {
-                                    text.setFill(Color.rgb(100, 100, 100));
-                                } else if (webElements.elementAt(w).getState().equals("correct")) {
-                                    text.setFill(Color.rgb(60, 200, 80));
-                                } else if (webElements.elementAt(w).getState().equals("wrong")) {
-                                    text.setFill(Color.rgb(250, 85, 85));
-                                } else if (webElements.elementAt(w).getState().equals("processing")) {
-                                    text.setFill(Color.rgb(250, 130, 50));
-                                }
-                                Text tempText = text;
-
-                                //update new Gui
-                                Platform.runLater(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        areaResult.getChildren().add(tempText);
+                                     */
+                                    if (webElements.elementAt(w).getState().equals("waiting")) {
+                                        text.setFill(Color.rgb(100, 100, 100));
+                                    } else if (webElements.elementAt(w).getState().equals("correct")) {
+                                        text.setFill(Color.rgb(60, 200, 80));
+                                    } else if (webElements.elementAt(w).getState().equals("wrong")) {
+                                        text.setFill(Color.rgb(250, 85, 85));
                                     }
-                                });
+                                    Text tempText = text;
+
+                                    //update new Gui
+                                    Platform.runLater(new Runnable() {
+                                        @Override
+                                        public void run() {
+                                            areaResult.getChildren().add(tempText);
+                                        }
+                                    });
+
+                                }
 
                             }
 

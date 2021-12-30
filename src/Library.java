@@ -1,6 +1,8 @@
 
 import java.util.Iterator;
 import java.util.Vector;
+import org.jsoup.Jsoup;
+import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -73,11 +75,11 @@ public class Library {
     public Vector<Element> parseElements(String e, Vector<Element> list) {
         Element newElement;
         Boolean exists;
-        System.out.println (e);
+        System.out.println(e);
         String[] lines = e.split("[\\r\\n]+");
         for (int i = 0; i < lines.length; i++) {
-          //  System.out.println(lines[i]);
-            if (lines[i].length() > 0 ) {
+            //  System.out.println(lines[i]);
+            if (lines[i].length() > 0) {
                 exists = false;
                 // take itterator to begining of vector
                 Iterator<Element> itr = list.iterator();
@@ -87,7 +89,7 @@ public class Library {
                 }
 
                 if (!exists) {
-                    
+
                     //creat element
                     /*
                     state => waiting means not treated yet  (black) 100 100 100
@@ -106,21 +108,11 @@ public class Library {
         }
         return list;
     }
-    
-    
+
     public String getSugesstion(String e) {
-        String result ;
-       
-        result = e.replaceAll("<p ", "") ;
-        result = result.replaceAll("</p><p>", " / ") ;
-        result = result.replaceAll("<span class=\"mistake-text auto-corrected\">", "") ;
-        result = result.replaceAll("class=\"tooltip-title auto-correction\">", "") ;
-        result = result.replaceAll("</p><p class=\"more-details\"><span>Click to see more suggestions</span></p>", "") ;
-        result = e.replaceAll("</span> ", "") ;
-        result = result.replaceAll("<span class=\"correction-text\">", "") ;
-        result = result.replaceAll("<span class=\"definition\">", "") ;
-       
-        return result;
+
+        return Jsoup.parse(e).text();
+
     }
 
 }
