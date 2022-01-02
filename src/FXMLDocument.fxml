@@ -4,19 +4,31 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="998.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="998.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLDocumentController">
     <children>
-      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="450.0" layoutY="77.0" mnemonicParsing="false" onAction="#Event" prefHeight="41.0" prefWidth="91.0" text="Run" />
-      <Label fx:id="labelParsed" alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Total :" textAlignment="CENTER" />
-      <Label fx:id="labelState" alignment="CENTER" contentDisplay="CENTER" layoutX="342.0" layoutY="128.0" prefHeight="50.0" prefWidth="308.0" text="State : " textAlignment="CENTER" wrapText="true" />
-      <Label fx:id="labelCorrect" alignment="CENTER" contentDisplay="CENTER" layoutX="397.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Correcte :" textAlignment="CENTER" />
-      <ScrollPane fx:id="scrollPane" layoutX="19.0" layoutY="314.0" prefHeight="265.0" prefWidth="954.0">
+      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="450.0" layoutY="77.0" mnemonicParsing="false" onAction="#Event" prefHeight="50.0" prefWidth="102.0" stylesheets="@assets/styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="Ebrima Bold" size="18.0" />
+         </font></Button>
+      <Label fx:id="labelParsed" alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Total :" textAlignment="CENTER" textFill="#a288d3">
+         <font>
+            <Font name="Cambria Bold" size="18.0" />
+         </font></Label>
+      <Label fx:id="labelCorrect" alignment="CENTER" contentDisplay="CENTER" layoutX="397.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Correcte :" textAlignment="CENTER" textFill="#3fdd7b">
+         <font>
+            <Font name="Cambria Bold" size="18.0" />
+         </font></Label>
+      <ScrollPane fx:id="scrollPane" layoutX="19.0" layoutY="314.0" prefHeight="265.0" prefWidth="954.0" style="-fx-background-color: #1c1b1b;" stylesheets="@assets/styleRun.css">
          <content>
-            <TextFlow fx:id="areaResult" prefHeight="263.0" prefWidth="955.0" textAlignment="CENTER" />
+            <TextFlow fx:id="areaResult" prefHeight="263.0" prefWidth="955.0" style="-fx-background-color: #1c1b1b;" stylesheets="@assets/styleRun.css" textAlignment="CENTER" />
          </content>
       </ScrollPane>
-      <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="700.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Erreurs :" textAlignment="CENTER" />
+      <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="700.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Erreurs :" textAlignment="CENTER" textFill="#ff5d5d">
+         <font>
+            <Font name="Cambria Bold" size="18.0" />
+         </font></Label>
     </children>
 </AnchorPane>

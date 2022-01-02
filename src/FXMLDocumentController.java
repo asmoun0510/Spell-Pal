@@ -11,8 +11,6 @@ import java.util.Vector;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javafx.application.Platform;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -40,8 +38,6 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label labelParsed;
     @FXML
-    private Label labelState;
-    @FXML
     private Label labelCorrect;
     @FXML
     private Label labelError;
@@ -51,18 +47,12 @@ public class FXMLDocumentController implements Initializable {
     private TextFlow areaResult;
 
     Library lib = new Library();
-    ObservableList<Text> green = null, orange = null, red = null, black = null;
-    Thread satrtsingle;
+
     WebDriver driverReverso, driverBrowser;
-    Vector<Element> webElements = new Vector<Element>();
+    Vector<Element> webElements = new Vector<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
-        green = FXCollections.observableArrayList();
-        orange = FXCollections.observableArrayList();
-        red = FXCollections.observableArrayList();
-        black = FXCollections.observableArrayList();
 
         labelCorrect.setText("Nombre Correcte : 0");
         labelError.setText("Nombre Erreur : 0");
@@ -102,9 +92,11 @@ public class FXMLDocumentController implements Initializable {
                                         areaResult.getChildren().clear();
                                     }
                                 });
-
+                                int numTotal = webElements.size();
+                                int numCorecte = 0, numError = 0;
                                 for (int w = 0; w < webElements.size(); w++) {
                                     String myString;
+
                                     myString = "\n " + webElements.elementAt(w).getText();
                                     if (webElements.elementAt(w).getState().equals("error")) {
                                         myString = myString + " => " + webElements.elementAt(w).getSuggest();
@@ -119,19 +111,26 @@ public class FXMLDocumentController implements Initializable {
                     suggestion => editting sugestions 
                                      */
                                     if (webElements.elementAt(w).getState().equals("waiting")) {
-                                        text.setFill(Color.rgb(100, 100, 100));
+                                        text.setFill(Color.rgb(162, 136, 211));
                                     } else if (webElements.elementAt(w).getState().equals("correct")) {
-                                        text.setFill(Color.rgb(60, 200, 80));
+                                        text.setFill(Color.rgb(36, 221, 123));
+                                        numCorecte++;
                                     } else if (webElements.elementAt(w).getState().equals("wrong")) {
-                                        text.setFill(Color.rgb(250, 85, 85));
+                                        text.setFill(Color.rgb(255, 93, 93));
+                                        numError++;
                                     }
                                     Text tempText = text;
                                     //update new Gui
-
+                                    String newLabelCorrect = String.valueOf(numCorecte);
+                                    String newLabelError = String.valueOf(numError);
+                                    String newLabelTotal = String.valueOf(numTotal);
                                     Platform.runLater(new Runnable() {
                                         @Override
                                         public void run() {
                                             areaResult.getChildren().add(tempText);
+                                            labelCorrect.setText("Nombre Correcte : " + newLabelCorrect);
+                                            labelError.setText("Nombre Erreurs : " + newLabelError);
+                                            labelParsed.setText("Nombre Total :" + newLabelTotal);
                                         }
                                     });
 
@@ -159,26 +158,24 @@ public class FXMLDocumentController implements Initializable {
                     Text text;
                     while (true) {
                         try {
-                            Thread.sleep(500);
+
                             for (int j = 0; j < webElements.size(); j++) {
                                 if (webElements.get(j).state.equals("waiting")) {
-                                    Thread.sleep(500);
+
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnClear"))).click();
-                                    Thread.sleep(500);
+                                    Thread.sleep(250);
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("startText"))).sendKeys(webElements.get(j).text);
-                                    Thread.sleep(500);
+                                    Thread.sleep(250);
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
-                                    Thread.sleep(500);
+                                    Thread.sleep(250);
                                     //  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
                                     List<WebElement> mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
                                     if (!mistakes.isEmpty()) {
-                                        System.out.println(mistakes.size() + "/");
+
                                         String suggestion = "";
                                         for (int m = 0; m < mistakes.size(); m++) {
-                                            System.out.println(mistakes.get(m).getAttribute("tooltip"));
-                                            System.out.println("init sug" + suggestion);
                                             suggestion = suggestion + lib.getSugesstion(mistakes.get(m).getAttribute("tooltip"));
-                                            System.out.println("last sug" + suggestion);
+
                                         }
                                         webElements.get(j).setState("wrong");
                                         webElements.get(j).setSuggest(suggestion);
@@ -195,13 +192,15 @@ public class FXMLDocumentController implements Initializable {
                                         areaResult.getChildren().clear();
                                     }
                                 });
-
+                                int numTotal = webElements.size();
+                                int numCorecte = 0, numError = 0;
                                 for (int w = 0; w < webElements.size(); w++) {
 
                                     String myString;
                                     myString = "\n " + webElements.elementAt(w).getText();
                                     if (webElements.elementAt(w).getState().equals("wrong")) {
                                         myString = myString + " => " + webElements.elementAt(w).getSuggest();
+
                                     }
                                     text = new Text(myString);
                                     text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
@@ -215,19 +214,26 @@ public class FXMLDocumentController implements Initializable {
                     suggestion => editting sugestions 
                                      */
                                     if (webElements.elementAt(w).getState().equals("waiting")) {
-                                        text.setFill(Color.rgb(100, 100, 100));
+                                        text.setFill(Color.rgb(162, 136, 211));
                                     } else if (webElements.elementAt(w).getState().equals("correct")) {
-                                        text.setFill(Color.rgb(60, 200, 80));
+                                        text.setFill(Color.rgb(36, 221, 123));
+                                        numCorecte++;
                                     } else if (webElements.elementAt(w).getState().equals("wrong")) {
-                                        text.setFill(Color.rgb(250, 85, 85));
+                                        text.setFill(Color.rgb(255, 93, 93));
+                                        numError++;
                                     }
                                     Text tempText = text;
-
                                     //update new Gui
+                                    String newLabelCorrect = String.valueOf(numCorecte);
+                                    String newLabelError = String.valueOf(numError);
+                                    String newLabelTotal = String.valueOf(numTotal);
                                     Platform.runLater(new Runnable() {
                                         @Override
                                         public void run() {
                                             areaResult.getChildren().add(tempText);
+                                            labelCorrect.setText("Nombre Correcte : " + newLabelCorrect);
+                                            labelError.setText("Nombre Erreurs : " + newLabelError);
+                                            labelParsed.setText("Nombre Total :" + newLabelTotal);
                                         }
                                     });
 

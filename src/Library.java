@@ -2,7 +2,6 @@
 import java.util.Iterator;
 import java.util.Vector;
 import org.jsoup.Jsoup;
-import static org.jsoup.nodes.Document.OutputSettings.Syntax.html;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -77,33 +76,29 @@ public class Library {
         Boolean exists;
         System.out.println(e);
         String[] lines = e.split("[\\r\\n]+");
-        for (int i = 0; i < lines.length; i++) {
+        for (String line : lines) {
             //  System.out.println(lines[i]);
-            if (lines[i].length() > 0) {
+            if (line.length() > 0) {
                 exists = false;
                 // take itterator to begining of vector
                 Iterator<Element> itr = list.iterator();
                 //searcj if already exists 
                 while (itr.hasNext() && exists == false) {
-                    exists = itr.next().getText().equals(lines[i]);
+                    exists = itr.next().getText().equals(line);
                 }
-
                 if (!exists) {
-
                     //creat element
                     /*
                     state => waiting means not treated yet  (black) 100 100 100
-                          => correct means treated and passed (Green) 60 200 80
-                          => spell means treated and spell error  (Red) 250 85 85
-                          => grammar means treated and grammar  error  (Orange) 250 130 50
-                    
+                    => correct means treated and passed (Green) 60 200 80
+                    => spell means treated and spell error  (Red) 250 85 85
+                    => grammar means treated and grammar  error  (Orange) 250 130 50
                     suggestion => editting sugestions 
                      */
-                    newElement = new Element(lines[i], "waiting", "nothing");
+                    newElement = new Element(line, "waiting", "nothing");
                     //add element to vector
                     list.add(newElement);
                 }
-
             }
         }
         return list;
