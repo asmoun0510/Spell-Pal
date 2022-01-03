@@ -79,7 +79,7 @@ public class FXMLDocumentController implements Initializable {
                     Text text;
                     while (true) {
                         try {
-                            Thread.sleep(500);
+                            Thread.sleep(300);
                             newPage = lib.getSourcePage(driverBrowser);
                             if (!initialPage.equals(newPage)) {
                                 contentPage = lib.getContentPage(driverBrowser);
@@ -163,13 +163,19 @@ public class FXMLDocumentController implements Initializable {
                                 if (webElements.get(j).state.equals("waiting")) {
 
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnClear"))).click();
-                                    Thread.sleep(250);
+                                    Thread.sleep(300);
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("startText"))).sendKeys(webElements.get(j).text);
-                                    Thread.sleep(250);
+                                    Thread.sleep(300);
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
-                                    Thread.sleep(250);
+                                    Thread.sleep(300);
                                     //  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
-                                    List<WebElement> mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                    List<WebElement> mistakes ;
+                                    try {
+                                           mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                    }catch(Exception e) {
+                                        mistakes = null ;
+                                        System.out.print("error");
+                                    }
                                     if (!mistakes.isEmpty()) {
 
                                         String suggestion = "";

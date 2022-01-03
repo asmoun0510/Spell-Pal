@@ -56,7 +56,7 @@ public class Library {
 
     // return text elements of a web page
     public String getContentPage(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, 15);
+        WebDriverWait wait = new WebDriverWait(driver, 30);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body")));
         //System.out.println(element.getText());
         return element.getText();
@@ -64,7 +64,7 @@ public class Library {
 
     // return HTML of a web page
     public String getSourcePage(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, 15);
+        WebDriverWait wait = new WebDriverWait(driver, 60);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body")));
         //System.out.println (driver.getPageSource()) ;
         return driver.getPageSource();
