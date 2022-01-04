@@ -1,0 +1,114 @@
+#buttonRun {
+    -fx-background-color: #1c1b1b;
+    -fx-border-width: 3px;
+    -fx-border-color: #44ff00;
+    -fx-border-radius: 15px;
+    -fx-text-fill: white;
+}
+#buttonRun:focused{
+    -fx-background-color: #1c1b1b;
+}
+
+#buttonRun:hover{
+   -fx-background-color: #4a4a4a;
+  -fx-border-width: 4px;
+}
+
+#buttonRun:pressed{
+    -fx-background-color: #1c1b1b;
+}
+
+
+
+.scroll-pane {
+    -fx-background-color: #000000;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #000000;
+}
+
+.scroll-pane > .corner {
+    -fx-background-color: #000000;
+}
+
+
+.scroll-pane .scroll-bar{
+   -fx-background-insets: 0 -0.5 0.5 0;
+}
+.scroll-pane .scroll-bar .thumb{
+    -fx-background-insets: 0 2 0 2;
+}
+
+
+/* TextArea */
+.text-area{
+    -fx-background-radius: 0;
+    -fx-border-width: 1;
+    -fx-border-color: #222222;
+    -fx-text-fill: #08FF08;
+    -fx-highlight-fill: #007ACC;
+    -fx-background-color: #000000;
+
+}
+.text-area:hover{
+    -fx-border-color: #3E3E40;
+}
+.text-area:focused{
+    -fx-border-color: #007ACC;
+    -fx-background-color: #000000;
+}
+.text-area .content{
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+    -fx-background-color: #000000;
+}
+.text-area .scroll-bar{
+    -fx-background-insets: 0 -0.5 0.5 0;
+}
+.text-area .scroll-bar .thumb{
+    -fx-background-insets: 0 2 0 2;
+}
+.text-area *.text {
+    -fx-text-alignment: center;
+}
+
+
+/* ScrollBar */
+.scroll-bar{
+    -fx-background-radius: 0;
+    -fx-background-color: #2A2A2C;
+}
+
+.scroll-bar > .decrement-button{
+    -fx-background-color: #2A2A2C;
+    -fx-background-radius: 0;
+    -fx-border-width: 0;
+    -fx-cursor: HAND;
+}
+.scroll-bar .decrement-button,
+.scroll-bar .increment-button{
+    -fx-cursor: HAND;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+}
+.scroll-bar .decrement-button:hover,
+.scroll-bar .increment-button:hover{
+    -fx-background-color: #007ACC;
+}
+
+
+.scroll-bar:vertical  .increment-arrow,
+.scroll-bar:vertical  .decrement-arrow,
+.scroll-bar:horizontal .increment-arrow,
+.scroll-bar:horizontal .decrement-arrow{
+    -fx-shape : " ";
+}
+.scroll-bar:horizontal .thumb,
+.scroll-bar:vertical .thumb {
+    -fx-background-color: #d4d4d4;
+    -fx-background-radius : 0;
+    -fx-cursor: HAND;
+}
+
