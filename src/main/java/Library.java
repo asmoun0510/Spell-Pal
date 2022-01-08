@@ -26,7 +26,7 @@ public class Library {
     }
 
     // start browser for user
-    public WebDriver initilizeBrowser(WebDriver driver, String url) {
+    public WebDriver initilizeBrowser( String url) {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
         options.addArguments("--disable-extensions");
@@ -34,13 +34,13 @@ public class Library {
         options.addArguments("--disable-popup-blocking");
         options.addArguments("--no-sandbox");
         options.addArguments("--ignore-certificate-errors");
-        driver = new ChromeDriver(options);
+        WebDriver driver = new ChromeDriver(options);
         driver.get("https://" + url);
         return driver;
     }
 
     // start Reversoin headless mode
-    public WebDriver initilizeReverso(WebDriver driverReverso) {
+    public WebDriver initilizeReverso() {
         ChromeOptions optionsHeadless = new ChromeOptions();
         optionsHeadless.addArguments("--start-maximized");
         optionsHeadless.addArguments("--disable-extensions");
@@ -49,7 +49,7 @@ public class Library {
         optionsHeadless.addArguments("--no-sandbox");
         optionsHeadless.addArguments("--ignore-certificate-errors");
         // optionsHeadless.addArguments("--headless");
-        driverReverso = new ChromeDriver(optionsHeadless);
+        WebDriver driverReverso = new ChromeDriver(optionsHeadless);
         driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
         return driverReverso;
     }

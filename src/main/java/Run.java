@@ -8,14 +8,13 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 /**
  *
  * @author asmou
  */
-public class Beyn_Spell extends Application {
+public class Run extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
@@ -26,8 +25,7 @@ public class Beyn_Spell extends Application {
         stage.setResizable(false);
         stage.setTitle("Beyn Spell");
         //stage.getIcons().add(new Image("Assets/circle.png"));
-        scene.getStylesheets().add("assets/styleRun.css");
-        stage.show();
+        scene.getStylesheets().add("resources/styleRun.css");
         stage.show();
     }
 

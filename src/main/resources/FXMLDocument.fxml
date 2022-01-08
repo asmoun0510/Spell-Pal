@@ -9,7 +9,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="998.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLDocumentController">
     <children>
-      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="450.0" layoutY="77.0" mnemonicParsing="false" onAction="#Event" prefHeight="50.0" prefWidth="102.0" stylesheets="@assets/styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="450.0" layoutY="77.0" mnemonicParsing="false" onAction="#Event" prefHeight="50.0" prefWidth="102.0" stylesheets="@styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Ebrima Bold" size="18.0" />
          </font></Button>
@@ -21,9 +21,9 @@
          <font>
             <Font name="Cambria Bold" size="18.0" />
          </font></Label>
-      <ScrollPane fx:id="scrollPane" layoutX="19.0" layoutY="314.0" prefHeight="265.0" prefWidth="954.0" style="-fx-background-color: #1c1b1b;" stylesheets="@assets/styleRun.css">
+      <ScrollPane fx:id="scrollPane" layoutX="19.0" layoutY="314.0" prefHeight="265.0" prefWidth="954.0" style="-fx-background-color: #1c1b1b;" stylesheets="@styleRun.css">
          <content>
-            <TextFlow fx:id="areaResult" prefHeight="263.0" prefWidth="955.0" style="-fx-background-color: #1c1b1b;" stylesheets="@assets/styleRun.css" textAlignment="CENTER" />
+            <TextFlow fx:id="areaResult" prefHeight="263.0" prefWidth="955.0" style="-fx-background-color: #1c1b1b;" stylesheets="@styleRun.css" textAlignment="CENTER" />
          </content>
       </ScrollPane>
       <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="700.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Erreurs :" textAlignment="CENTER" textFill="#ff5d5d">

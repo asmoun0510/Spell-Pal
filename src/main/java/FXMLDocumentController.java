@@ -4,6 +4,8 @@
  * and open the template in the editor.
  */
 
+import io.github.bonigarcia.wdm.WebDriverManager;
+import io.github.bonigarcia.wdm.managers.ChromeDriverManager;
 import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -48,17 +50,16 @@ public class FXMLDocumentController implements Initializable {
 
     Library lib = new Library();
 
-    WebDriver driverReverso, driverBrowser;
     Vector<Element> webElements = new Vector<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
+        ChromeDriverManager.getInstance().setup();
+// driverReverso, driverBrowser;
+        //   WebDriverManager.chromedriver().browserVersion("97.0.4692.71").setup();
         labelCorrect.setText("Nombre Correcte : 0");
         labelError.setText("Nombre Erreur : 0");
         labelParsed.setText("Nombre Total : 0");
-
-        System.setProperty("webdriver.chrome.driver", "C:\\Users\\asmou\\Documents\\NetBeansProjects\\Beyn_Spell\\src\\dependencies\\chromedriver.exe");
 
         /*
         WebElement l= driver.findElement(By.tagName("body"));
@@ -74,7 +75,7 @@ public class FXMLDocumentController implements Initializable {
                 public void run() {
                     //  start browser for user
                     String newPage, contentPage;
-                    driverBrowser = lib.initilizeBrowser(driverBrowser, "www.google.com");
+                    WebDriver driverBrowser = lib.initilizeBrowser("www.google.com");
                     String initialPage = lib.getSourcePage(driverBrowser);
                     Text text;
                     while (true) {
@@ -151,7 +152,7 @@ public class FXMLDocumentController implements Initializable {
             Thread threadReverso = new Thread() {
                 //  start browser and visit Reverso  
                 public void run() {
-                    driverReverso = lib.initilizeReverso(driverReverso);
+                    WebDriver driverReverso = lib.initilizeReverso();
                     WebDriverWait wait = new WebDriverWait(driverReverso, 50);
                     wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
 
@@ -169,11 +170,11 @@ public class FXMLDocumentController implements Initializable {
                                     wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
                                     Thread.sleep(300);
                                     //  wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
-                                    List<WebElement> mistakes ;
+                                    List<WebElement> mistakes;
                                     try {
-                                           mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
-                                    }catch(Exception e) {
-                                        mistakes = null ;
+                                        mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                    } catch (Exception e) {
+                                        mistakes = null;
                                         System.out.print("error");
                                     }
                                     if (!mistakes.isEmpty()) {
