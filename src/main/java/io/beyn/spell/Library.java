@@ -2,12 +2,15 @@ package io.beyn.spell;
 
 import java.util.Iterator;
 import java.util.Vector;
+
 import org.jsoup.Jsoup;
+import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -16,8 +19,8 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author asmou
  */
 public class Library {
@@ -27,7 +30,7 @@ public class Library {
     }
 
     // start browser for user
-    public WebDriver initilizeBrowser( String url) {
+    public WebDriver initilizeBrowser(String url) {
         ChromeOptions options = new ChromeOptions();
         options.addArguments("--start-maximized");
         options.addArguments("--disable-extensions");
@@ -59,7 +62,6 @@ public class Library {
     public String getContentPage(WebDriver driver) {
         WebDriverWait wait = new WebDriverWait(driver, 30);
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body")));
-        //System.out.println(element.getText());
         return element.getText();
     }
 
@@ -75,11 +77,10 @@ public class Library {
     public Vector<Element> parseElements(String e, Vector<Element> list) {
         Element newElement;
         Boolean exists;
-        System.out.println(e);
         String[] lines = e.split("[\\r\\n]+");
         for (String line : lines) {
             //  System.out.println(lines[i]);
-            if (line.length() > 0) {
+            if (filterData(line)) {
                 exists = false;
                 // take itterator to begining of vector
                 Iterator<Element> itr = list.iterator();
@@ -104,6 +105,20 @@ public class Library {
         }
         return list;
     }
+
+    private boolean filterData(String line) {
+        if (line.length() > 0 && !line.matches("[0-9]+") && !line.contains("@") && !line.equals("FR") && !line.equals("EN") && !line.equals("AR")) return true;
+        return false;
+    }
+    
+    /*public String checkAlert (WebDriver driver) {
+        if (alertAppeared(driver)) {
+            Alert alert = driver.switchTo().alert();
+            alert.getText();
+        }
+        return reult ;
+
+    }*/
 
     public String getSugesstion(String e) {
 

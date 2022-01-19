@@ -26,7 +26,7 @@ public class Run extends Application {
         stage.setResizable(false);
         stage.setTitle("Beyn Spell");
         //stage.getIcons().add(new Image("Assets/circle.png"));
-        scene.getStylesheets().add("styleRun.css");
+        //scene.getStylesheets().add("styleRun.css");
         stage.show();
     }
 
