@@ -1,3 +1,4 @@
+package io.beyn.spell;
 
 import java.util.Objects;
 

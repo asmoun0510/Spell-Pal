@@ -7,7 +7,7 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="998.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="998.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.beyn.spell.FXMLDocumentController">
     <children>
       <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="450.0" layoutY="77.0" mnemonicParsing="false" onAction="#Event" prefHeight="50.0" prefWidth="102.0" stylesheets="@styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
          <font>
