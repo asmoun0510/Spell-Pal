@@ -17,12 +17,14 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -46,10 +48,14 @@ public class FXMLDocumentController implements Initializable {
 
     Library lib = new Library();
     Vector<Element> webElements = new Vector<>();
+    @FXML
+    private Button buttonResult;
+    @FXML
+    private ScrollPane myScrollPane;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        WebDriverManager.chromedriver().browserVersion("97.0.4692.71").setup();
+        WebDriverManager.chromedriver().browserVersion("97.0.4692.99").setup();
         labelCorrect.setText("Nombre Correcte : 0");
         labelError.setText("Nombre Erreur : 0");
         labelParsed.setText("Nombre Total : 0");
@@ -57,7 +63,10 @@ public class FXMLDocumentController implements Initializable {
 
     @FXML
     private void Event(ActionEvent event) {
-        if (event.getSource() == buttonRun) {
+        if(event.getSource() == buttonResult) {
+
+        }
+        else if (event.getSource() == buttonRun) {
             Thread threadBrowse = new Thread(() -> {
                 //  start browser for user
                 String newPage, contentPage;
@@ -66,12 +75,11 @@ public class FXMLDocumentController implements Initializable {
                 Text text;
                 while (true) {
                     try {
-                        Thread.sleep(300);
+                        //  Thread.sleep(300);
                         newPage = lib.getSourcePage(driverBrowser);
                         if (!initialPage.equals(newPage)) {
                             contentPage = lib.getContentPage(driverBrowser);
                             webElements = lib.parseElements(contentPage, webElements);
-
                             Platform.runLater(() -> areaResult.getChildren().clear());
                             int numTotal = webElements.size();
                             int numCorecte = 0, numError = 0;
@@ -111,8 +119,8 @@ public class FXMLDocumentController implements Initializable {
                         } else {
 
                         }
-                    } catch (InterruptedException ex) {
-                        // Logger.getLogger(FXMLDocumentController.class.getName()).log(Level.SEVERE, null, ex);
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
                     }
 
                 }
@@ -121,46 +129,80 @@ public class FXMLDocumentController implements Initializable {
             //  start browser and visit Reverso
             Thread threadReverso = new Thread(() -> {
                 WebDriver driverReverso = lib.initilizeReverso();
-                WebDriverWait wait = new WebDriverWait(driverReverso, 50);
-                wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
+                WebDriverWait wait = new WebDriverWait(driverReverso, 10);
+                // wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
                 Text text;
+                List<WebElement> mistakes, correct;
+
                 while (true) {
                     for (int j = 0; j < webElements.size(); j++) {
                         if (webElements.get(j).getState().equals("waiting")) {
-                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnClear"))).click();
                             try {
-                                wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("startText"))).sendKeys(webElements.get(j).getText());
+                                wait.until(ExpectedConditions.elementToBeClickable(By.id("btnClear"))).click();
+                                System.out.println("1.btnClear cliked");
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
                             }
 
-                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.id("btnSpell"))).click();
                             try {
-                                wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
+                                wait.until(ExpectedConditions.and(
+                                        ExpectedConditions.visibilityOfElementLocated(By.id("startText")),
+                                        ExpectedConditions.elementToBeClickable(By.id("btnSpell"))));
                             } catch (Exception e) {
                                 e.printStackTrace();
+                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
                             }
-
-
-                            List<WebElement> mistakes;
                             try {
-                                mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                driverReverso.findElement(By.id("startText")).sendKeys(webElements.get(j).getText());
+                                System.out.println("2.startText sendkeys");
                             } catch (Exception e) {
-                                mistakes = null;
                                 e.printStackTrace();
+                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
                             }
-                            if (!mistakes.isEmpty()) {
 
-                                String suggestion = "";
-                                for (int m = 0; m < mistakes.size(); m++) {
-                                    suggestion = suggestion + lib.getSugesstion(mistakes.get(m).getAttribute("tooltip"));
+                            try {
+                                driverReverso.findElement(By.id("btnSpell")).click();
+                                System.out.println("3. btnSpell cliked");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
+                            }
+
+                            try {
+                                Thread.sleep(400);
+                                correct = driverReverso.findElements(By.xpath("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]"));
+                                if (correct.size() > 0) {
+                                    System.out.println("corrrecr");
+                                    webElements.get(j).setState("correct");
                                 }
-                                webElements.get(j).setState("wrong");
-                                webElements.get(j).setSuggest(suggestion);
-                            } else {
-                                webElements.get(j).setState("correct");
+                                // not correct => wrong$x("*//label[contains(@class, 'correctmsg')]");
+                                //$x("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]");
+                                else {
+                                    mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                    System.out.println(mistakes.size() + "////" + mistakes.isEmpty());
+                                    if (mistakes.size() > 0) {
+                                        String suggestion = "";
+                                        for (int m = 0; m < mistakes.size(); m++) {
+                                            suggestion = suggestion + lib.getSugesstion(mistakes.get(m).getAttribute("tooltip"));
+                                        }
+                                        webElements.get(j).setState("wrong");
+                                        webElements.get(j).setSuggest(suggestion);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                j--;
+                                break;
                             }
-
                         }
 
                         Platform.runLater(() -> areaResult.getChildren().clear());

@@ -6,8 +6,6 @@ module io.beyn.spell {
     requires org.seleniumhq.selenium.chrome_driver;
     requires org.jsoup;
     requires io.github.bonigarcia.webdrivermanager;
-
-
     opens io.beyn.spell to javafx.fxml;
     exports io.beyn.spell ;
 }

@@ -1,20 +1,20 @@
-#buttonRun {
+.button {
     -fx-background-color: #1c1b1b;
     -fx-border-width: 3px;
     -fx-border-color: #44ff00;
     -fx-border-radius: 15px;
     -fx-text-fill: white;
 }
-#buttonRun:focused{
+.button:focused{
     -fx-background-color: #1c1b1b;
 }
 
-#buttonRun:hover{
+.button:hover{
    -fx-background-color: #4a4a4a;
   -fx-border-width: 4px;
 }
 
-#buttonRun:pressed{
+.button:pressed{
     -fx-background-color: #1c1b1b;
 }
 
