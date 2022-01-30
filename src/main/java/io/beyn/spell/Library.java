@@ -78,6 +78,9 @@ public class Library {
         Element newElement;
         Boolean exists;
         String[] lines = e.split("[\\r\\n]+");
+    // traitement
+        // les fihier
+        // action => les page
         for (String line : lines) {
             //  System.out.println(lines[i]);
             if (filterData(line)) {
@@ -88,6 +91,17 @@ public class Library {
                 while (itr.hasNext() && exists == false) {
                     exists = itr.next().getText().equals(line);
                 }
+                /*
+                ellemn 1
+
+                zedzed
+                zedzed
+
+
+                zlkz,frefref
+
+
+                 */
                 if (!exists) {
                     //creat element
                     /*
