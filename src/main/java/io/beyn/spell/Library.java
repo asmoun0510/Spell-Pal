@@ -43,8 +43,8 @@ public class Library {
         return driver;
     }
 
-    // start Reversoin headless mode
-    public WebDriver initilizeReverso() {
+    // start Scribensin headless mode ENG
+    public WebDriver initilizeScribensENG() {
         ChromeOptions optionsHeadless = new ChromeOptions();
         optionsHeadless.addArguments("--start-maximized");
         optionsHeadless.addArguments("--disable-extensions");
@@ -53,9 +53,25 @@ public class Library {
         optionsHeadless.addArguments("--no-sandbox");
         optionsHeadless.addArguments("--ignore-certificate-errors");
         // optionsHeadless.addArguments("--headless");
-        WebDriver driverReverso = new ChromeDriver(optionsHeadless);
-        driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
-        return driverReverso;
+        WebDriver driverScribensENG = new ChromeDriver(optionsHeadless);
+        driverScribensENG.get("https://www.scribens.com/");
+        return driverScribensENG;
+    }
+
+
+    // start Scribensin headless mode FR
+    public WebDriver initilizeScribensFR() {
+        ChromeOptions optionsHeadless = new ChromeOptions();
+        optionsHeadless.addArguments("--start-maximized");
+        optionsHeadless.addArguments("--disable-extensions");
+        optionsHeadless.addArguments("--incognito");
+        optionsHeadless.addArguments("--disable-popup-blocking");
+        optionsHeadless.addArguments("--no-sandbox");
+        optionsHeadless.addArguments("--ignore-certificate-errors");
+        // optionsHeadless.addArguments("--headless");
+        WebDriver driverScribensFR = new ChromeDriver(optionsHeadless);
+        driverScribensFR.get("https://www.scribens.fr/");
+        return driverScribensFR;
     }
 
     // return text elements of a web page
@@ -138,6 +154,12 @@ public class Library {
 
         return Jsoup.parse(e).text();
 
+    }
+
+    public WebDriver changeToENG(WebDriver driver) {
+
+
+            return  driver;
     }
 
 }

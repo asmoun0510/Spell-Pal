@@ -125,11 +125,10 @@ public class FXMLDocumentController implements Initializable {
 
                 }
             });
-
-            //  start browser and visit Reverso
-            Thread threadReverso = new Thread(() -> {
-                WebDriver driverReverso = lib.initilizeReverso();
-                WebDriverWait wait = new WebDriverWait(driverReverso, 10);
+            //  start browser and visit Scribens FR
+            Thread threadScribens = new Thread(() -> {
+                WebDriver driverScribensFR = lib.initilizeScribensFR();
+                WebDriverWait wait = new WebDriverWait(driverScribensFR, 10);
                 // wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
                 Text text;
                 List<WebElement> mistakes, correct;
@@ -142,7 +141,7 @@ public class FXMLDocumentController implements Initializable {
                                 System.out.println("1.btnClear cliked");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
                                 j--;
                                 break;
                             }
@@ -153,33 +152,33 @@ public class FXMLDocumentController implements Initializable {
                                         ExpectedConditions.elementToBeClickable(By.id("btnSpell"))));
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
                                 j--;
                                 break;
                             }
                             try {
-                                driverReverso.findElement(By.id("startText")).sendKeys(webElements.get(j).getText());
+                                driverScribensFR.findElement(By.id("startText")).sendKeys(webElements.get(j).getText());
                                 System.out.println("2.startText sendkeys");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
                                 j--;
                                 break;
                             }
 
                             try {
-                                driverReverso.findElement(By.id("btnSpell")).click();
+                                driverScribensFR.findElement(By.id("btnSpell")).click();
                                 System.out.println("3. btnSpell cliked");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverReverso.get("https://www.reverso.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
                                 j--;
                                 break;
                             }
 
                             try {
                                 Thread.sleep(400);
-                                correct = driverReverso.findElements(By.xpath("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]"));
+                                correct = driverScribensFR.findElements(By.xpath("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]"));
                                 if (correct.size() > 0) {
                                     System.out.println("corrrecr");
                                     webElements.get(j).setState("correct");
@@ -187,7 +186,130 @@ public class FXMLDocumentController implements Initializable {
                                 // not correct => wrong$x("*//label[contains(@class, 'correctmsg')]");
                                 //$x("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]");
                                 else {
-                                    mistakes = driverReverso.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                    mistakes = driverScribensFR.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
+                                    System.out.println(mistakes.size() + "////" + mistakes.isEmpty());
+                                    if (mistakes.size() > 0) {
+                                        String suggestion = "";
+                                        for (int m = 0; m < mistakes.size(); m++) {
+                                            suggestion = suggestion + lib.getSugesstion(mistakes.get(m).getAttribute("tooltip"));
+                                        }
+                                        webElements.get(j).setState("wrong");
+                                        webElements.get(j).setSuggest(suggestion);
+                                    }
+                                }
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                j--;
+                                break;
+                            }
+                        }
+
+                        Platform.runLater(() -> areaResult.getChildren().clear());
+                        int numTotal = webElements.size();
+                        int numCorecte = 0, numError = 0;
+                        for (int w = 0; w < webElements.size(); w++) {
+
+                            String myString;
+                            myString = "\n " + webElements.elementAt(w).getText();
+                            if (webElements.elementAt(w).getState().equals("wrong")) {
+                                myString = myString + " => " + webElements.elementAt(w).getSuggest();
+                            }
+
+                            text = new Text(myString);
+                            text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+
+                            if (webElements.elementAt(w).getState().equals("waiting")) {
+                                text.setFill(Color.rgb(162, 136, 211));
+                            } else if (webElements.elementAt(w).getState().equals("correct")) {
+                                text.setFill(Color.rgb(36, 221, 123));
+                                numCorecte++;
+                            } else if (webElements.elementAt(w).getState().equals("wrong")) {
+                                text.setFill(Color.rgb(255, 93, 93));
+                                numError++;
+                            }
+                            Text tempText = text;
+                            //update new Gui
+                            String newLabelCorrect = String.valueOf(numCorecte);
+                            String newLabelError = String.valueOf(numError);
+                            String newLabelTotal = String.valueOf(numTotal);
+                            Platform.runLater(() -> {
+                                areaResult.getChildren().add(tempText);
+                                labelCorrect.setText("Nombre Correcte : " + newLabelCorrect);
+                                labelError.setText("Nombre Erreurs : " + newLabelError);
+                                labelParsed.setText("Nombre Total :" + newLabelTotal);
+                            });
+
+                        }
+
+                    }
+
+                    //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
+
+                }
+
+            });
+            //  start browser and visit Scribens ENG
+            Thread threadScribensENG = new Thread(() -> {
+                WebDriver driverScribensENG = lib.initilizeScribensENG();
+                WebDriverWait wait = new WebDriverWait(driverScribensENG, 10);
+                // wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
+                Text text;
+                List<WebElement> mistakes, correct;
+
+                while (true) {
+                    for (int j = 0; j < webElements.size(); j++) {
+                        if (webElements.get(j).getState().equals("waiting")) {
+                            try {
+                                wait.until(ExpectedConditions.elementToBeClickable(By.id("btnClear"))).click();
+                                System.out.println("1.btnClear cliked");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
+                            }
+
+                            try {
+                                wait.until(ExpectedConditions.and(
+                                        ExpectedConditions.visibilityOfElementLocated(By.id("startText")),
+                                        ExpectedConditions.elementToBeClickable(By.id("btnSpell"))));
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
+                            }
+                            try {
+                                driverScribensENG.findElement(By.id("startText")).sendKeys(webElements.get(j).getText());
+                                System.out.println("2.startText sendkeys");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
+                            }
+
+                            try {
+                                driverScribensENG.findElement(By.id("btnSpell")).click();
+                                System.out.println("3. btnSpell cliked");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                j--;
+                                break;
+                            }
+
+                            try {
+                                Thread.sleep(400);
+                                correct = driverScribensENG.findElements(By.xpath("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]"));
+                                if (correct.size() > 0) {
+                                    System.out.println("corrrecr");
+                                    webElements.get(j).setState("correct");
+                                }
+                                // not correct => wrong$x("*//label[contains(@class, 'correctmsg')]");
+                                //$x("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]");
+                                else {
+                                    mistakes = driverScribensENG.findElements(By.xpath("*//span[contains(@class, 'correction')]"));
                                     System.out.println(mistakes.size() + "////" + mistakes.isEmpty());
                                     if (mistakes.size() > 0) {
                                         String suggestion = "";
@@ -250,7 +372,7 @@ public class FXMLDocumentController implements Initializable {
 
             });
 
-            threadReverso.start();
+            threadScribens.start();
             threadBrowse.start();
 
         }
