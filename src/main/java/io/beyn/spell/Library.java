@@ -110,17 +110,7 @@ public class Library {
                 while (itr.hasNext() && exists == false) {
                     exists = itr.next().getText().equals(line);
                 }
-                /*
-                ellemn 1
 
-                zedzed
-                zedzed
-
-
-                zlkz,frefref
-
-
-                 */
                 if (!exists) {
                     //creat element
                     /*
@@ -176,6 +166,7 @@ public class Library {
     public String detctedLanguage(String myString) {
         LanguageDetector detector = LanguageDetectorBuilder.fromLanguages(ENGLISH, FRENCH, ARABIC).build();
         Language detectedLanguage = detector.detectLanguageOf(myString);
+        System.out.println(detectedLanguage.toString());
         return detectedLanguage.toString();
 
     }

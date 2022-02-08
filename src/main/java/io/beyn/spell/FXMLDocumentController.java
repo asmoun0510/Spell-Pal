@@ -132,10 +132,9 @@ public class FXMLDocumentController implements Initializable {
                 // wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
                 Text text;
                 List<WebElement> mistakes, correct;
-
                 while (true) {
                     for (int j = 0; j < webElements.size(); j++) {
-                        if (webElements.get(j).getState().equals("waiting")) {
+                        if (webElements.get(j).getState().equals("waiting") && webElements.get(j).getLanguage().equals("FRENCH")) {
                             try {
                                 wait.until(ExpectedConditions.elementToBeClickable(By.id("btnClear"))).click();
                                 System.out.println("1.btnClear cliked");
