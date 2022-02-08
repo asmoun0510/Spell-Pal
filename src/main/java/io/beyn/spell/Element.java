@@ -7,8 +7,8 @@ import java.util.Objects;
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 /**
- *
  * @author asmou
  */
 public class Element {
@@ -16,12 +16,13 @@ public class Element {
     String text = "";
     String state = "";
     String suggest = "";
+    String language = "";
 
-    public Element(String text, String state, String suggest) {
+    public Element(String text, String state, String suggest, String language) {
         this.text = text;
         this.state = state;
         this.suggest = suggest;
-
+        this.language = language;
     }
 
     public void setText(String text) {
@@ -37,6 +38,10 @@ public class Element {
         this.suggest = suggest;
     }
 
+    public void setLanguage(String language) {
+        this.language = language;
+    }
+
     public String getText() {
         return this.text;
     }
@@ -47,6 +52,10 @@ public class Element {
 
     public String getSuggest() {
         return this.suggest;
+    }
+
+    public String getLanguage() {
+        return this.language;
     }
 
     // required for vector check if exists 

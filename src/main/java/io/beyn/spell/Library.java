@@ -13,7 +13,9 @@ import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import com.github.pemistahl.lingua.api.*;
 
+import static com.github.pemistahl.lingua.api.Language.*;
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -94,7 +96,8 @@ public class Library {
         Element newElement;
         Boolean exists;
         String[] lines = e.split("[\\r\\n]+");
-    // traitement
+
+        // traitement
         // les fihier
         // action => les page
         for (String line : lines) {
@@ -127,7 +130,13 @@ public class Library {
                     => grammar means treated and grammar  error  (Orange) 250 130 50
                     suggestion => editting sugestions 
                      */
-                    newElement = new Element(line, "waiting", "nothing");
+                    //    String language =
+
+
+                    /* Java */
+
+
+                    newElement = new Element(line, "waiting", "nothing", detctedLanguage(line));
                     //add element to vector
                     list.add(newElement);
                 }
@@ -137,7 +146,8 @@ public class Library {
     }
 
     private boolean filterData(String line) {
-        if (line.length() > 0 && !line.matches("[0-9]+") && !line.contains("@") && !line.equals("FR") && !line.equals("EN") && !line.equals("AR")) return true;
+        if (line.length() > 0 && !line.matches("[0-9]+") && !line.contains("@") && !line.equals("FR") && !line.equals("EN") && !line.equals("AR"))
+            return true;
         return false;
     }
     
@@ -159,7 +169,15 @@ public class Library {
     public WebDriver changeToENG(WebDriver driver) {
 
 
-            return  driver;
+        return driver;
+    }
+
+
+    public String detctedLanguage(String myString) {
+        LanguageDetector detector = LanguageDetectorBuilder.fromLanguages(ENGLISH, FRENCH, ARABIC).build();
+        Language detectedLanguage = detector.detectLanguageOf(myString);
+        return detectedLanguage.toString();
+
     }
 
 }

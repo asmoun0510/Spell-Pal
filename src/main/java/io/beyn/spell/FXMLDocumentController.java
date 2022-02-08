@@ -126,7 +126,7 @@ public class FXMLDocumentController implements Initializable {
                 }
             });
             //  start browser and visit Scribens FR
-            Thread threadScribens = new Thread(() -> {
+            Thread threadScribensFR = new Thread(() -> {
                 WebDriver driverScribensFR = lib.initilizeScribensFR();
                 WebDriverWait wait = new WebDriverWait(driverScribensFR, 10);
                 // wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
@@ -372,7 +372,8 @@ public class FXMLDocumentController implements Initializable {
 
             });
 
-            threadScribens.start();
+            threadScribensFR.start();
+            threadScribensENG.start();
             threadBrowse.start();
 
         }
