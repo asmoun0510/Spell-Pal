@@ -9,7 +9,6 @@ import java.net.URL;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
-
 import io.github.bonigarcia.wdm.WebDriverManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -17,7 +16,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -59,9 +57,9 @@ public class FXMLDocumentController implements Initializable {
         WebDriverManager.chromedriver().browserVersion("97.0.4692.99").setup();
         labelCorrect.setText("Correcte : 0");
         labelTotal.setText("Total : 0");
-        labelExamine.setText("A Examiner : : 0");
+        labelExamine.setText("A Examiner : 0");
         labelOrto.setText("Ortographe : 0");
-        labelTypog.setText("Typographi et ponctuation :  : 0");
+        labelTypog.setText("Typographi et ponctuation : 0");
         labelGram.setText("Grammaire : 0");
     }
 
@@ -159,7 +157,7 @@ public class FXMLDocumentController implements Initializable {
                                 System.out.println("1.btnClear cliked");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.fr");
                                 j--;
                                 break;
                             }
@@ -170,7 +168,7 @@ public class FXMLDocumentController implements Initializable {
                                         ExpectedConditions.elementToBeClickable(By.id("btnSpell"))));
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.fr");
                                 j--;
                                 break;
                             }
@@ -179,7 +177,7 @@ public class FXMLDocumentController implements Initializable {
                                 System.out.println("2.startText sendkeys");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.fr");
                                 j--;
                                 break;
                             }
@@ -189,7 +187,7 @@ public class FXMLDocumentController implements Initializable {
                                 System.out.println("3. btnSpell cliked");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensFR.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensFR.get("https://www.Scribens.fr");
                                 j--;
                                 break;
                             }
@@ -297,7 +295,7 @@ public class FXMLDocumentController implements Initializable {
                                 System.out.println("1.btnClear cliked");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensENG.get("https://www.Scribens.com");
                                 j--;
                                 break;
                             }
@@ -308,7 +306,7 @@ public class FXMLDocumentController implements Initializable {
                                         ExpectedConditions.elementToBeClickable(By.id("btnSpell"))));
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensENG.get("https://www.Scribens.com");
                                 j--;
                                 break;
                             }
@@ -317,7 +315,7 @@ public class FXMLDocumentController implements Initializable {
                                 System.out.println("2.startText sendkeys");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensENG.get("https://www.Scribens.com");
                                 j--;
                                 break;
                             }
@@ -327,7 +325,7 @@ public class FXMLDocumentController implements Initializable {
                                 System.out.println("3. btnSpell cliked");
                             } catch (Exception e) {
                                 e.printStackTrace();
-                                driverScribensENG.get("https://www.Scribens.net/spell-checker/english-spelling-grammar/");
+                                driverScribensENG.get("https://www.Scribens.com");
                                 j--;
                                 break;
                             }

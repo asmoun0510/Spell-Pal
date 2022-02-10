@@ -164,6 +164,7 @@ public class Library {
 
 
     public String detctedLanguage(String myString) {
+        //UNKNOWN
         LanguageDetector detector = LanguageDetectorBuilder.fromLanguages(ENGLISH, FRENCH, ARABIC).build();
         Language detectedLanguage = detector.detectLanguageOf(myString);
         System.out.println(detectedLanguage.toString());
