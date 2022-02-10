@@ -30,7 +30,7 @@ public class Element {
     }
 
     public void setState(String state) {
-        // waiting #ffffff // correct #3fdd7b // ortographe #e86868 // grammaire #ddb83e // a examiner #f64dff //typographie et ponctuation #5e80fc
+        // waiting #ffffff // correct #3fdd7b // ortographe #e86868 // grammaire #ddb83e // examiner #f64dff //typo #5e80fc
         this.state = state;
     }
 

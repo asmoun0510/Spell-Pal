@@ -33,39 +33,43 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @author asmou
  */
 public class FXMLDocumentController implements Initializable {
-
-    @FXML
-    private Button buttonRun;
-    @FXML
-    private Label labelParsed;
-    @FXML
-    private Label labelCorrect;
-    @FXML
-    private Label labelError;
     @FXML
     private TextFlow areaResult;
-
-    Library lib = new Library();
-    Vector<Element> webElements = new Vector<>();
     @FXML
     private Button buttonResult;
     @FXML
-    private ScrollPane myScrollPane;
+    private Button buttonRun;
+    @FXML
+    private Label labelCorrect;
+    @FXML
+    private Label labelExamine;
+    @FXML
+    private Label labelGram;
+    @FXML
+    private Label labelOrto;
+    @FXML
+    private Label labelTotal;
+    @FXML
+    private Label labelTypog;
+    Library lib = new Library();
+    Vector<Element> webElements = new Vector<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
         WebDriverManager.chromedriver().browserVersion("97.0.4692.99").setup();
-        labelCorrect.setText("Nombre Correcte : 0");
-        labelError.setText("Nombre Erreur : 0");
-        labelParsed.setText("Nombre Total : 0");
+        labelCorrect.setText("Correcte : 0");
+        labelTotal.setText("Total : 0");
+        labelExamine.setText("A Examiner : : 0");
+        labelOrto.setText("Ortographe : 0");
+        labelTypog.setText("Typographi et ponctuation :  : 0");
+        labelGram.setText("Grammaire : 0");
     }
 
     @FXML
     private void Event(ActionEvent event) {
-        if(event.getSource() == buttonResult) {
+        if (event.getSource() == buttonResult) {
 
-        }
-        else if (event.getSource() == buttonRun) {
+        } else if (event.getSource() == buttonRun) {
             Thread threadBrowse = new Thread(() -> {
                 //  start browser for user
                 String newPage, contentPage;
@@ -81,7 +85,7 @@ public class FXMLDocumentController implements Initializable {
                             webElements = lib.parseElements(contentPage, webElements);
                             Platform.runLater(() -> areaResult.getChildren().clear());
                             int numTotal = webElements.size();
-                            int numCorecte = 0, numError = 0;
+                            int numCorecte = 0, numExamine = 0, numOrto = 0, numTypog = 0, numGram = 0;
                             for (int w = 0; w < webElements.size(); w++) {
                                 String myString;
                                 // myString = myString + " => " + webElements.elementAt(w).getSuggest();
@@ -91,25 +95,41 @@ public class FXMLDocumentController implements Initializable {
                                 }
                                 text = new Text(myString);
                                 text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
-                                if (webElements.elementAt(w).getState().equals("waiting")) {
-                                    text.setFill(Color.rgb(162, 136, 211));
+                                if (webElements.elementAt(w).getState().equals("typo")) {
+                                    text.setFill(Color.web("#5e80fc"));
                                 } else if (webElements.elementAt(w).getState().equals("correct")) {
-                                    text.setFill(Color.rgb(36, 221, 123));
+                                    text.setFill(Color.web("#3fdd7b"));
                                     numCorecte++;
-                                } else if (webElements.elementAt(w).getState().equals("wrong")) {
-                                    text.setFill(Color.rgb(255, 93, 93));
-                                    numError++;
+                                } else if (webElements.elementAt(w).getState().equals("ortographe")) {
+                                    text.setFill(Color.web("#e86868"));
+                                    numOrto++;
+                                } else if (webElements.elementAt(w).getState().equals("grammaire")) {
+                                    text.setFill(Color.web("#ddb83e"));
+                                    numCorecte++;
+                                } else if (webElements.elementAt(w).getState().equals("examiner")) {
+                                    text.setFill(Color.web("#f64dff"));
+                                    numOrto++;
+                                } else if (webElements.elementAt(w).getState().equals("waiting")) {
+                                    text.setFill(Color.web("#ffffff"));
+                                    numOrto++;
                                 }
                                 Text tempText = text;
                                 //update new Gui
                                 String newLabelCorrect = String.valueOf(numCorecte);
-                                String newLabelError = String.valueOf(numError);
                                 String newLabelTotal = String.valueOf(numTotal);
+                                String newLabelExamine = String.valueOf(numExamine);
+                                String newLabelOrto = String.valueOf(numOrto);
+                                String newLabelTypog = String.valueOf(numTypog);
+                                String newLabelGram = String.valueOf(numGram);
+
                                 Platform.runLater(() -> {
                                     areaResult.getChildren().add(tempText);
-                                    labelCorrect.setText("Nombre Correcte : " + newLabelCorrect);
-                                    labelError.setText("Nombre Erreurs : " + newLabelError);
-                                    labelParsed.setText("Nombre Total :" + newLabelTotal);
+                                    labelCorrect.setText("Correcte : " + newLabelCorrect);
+                                    labelTotal.setText("Total : " + newLabelTotal);
+                                    labelExamine.setText("A Examiner : " + newLabelExamine);
+                                    labelOrto.setText("Ortographe : " + newLabelOrto);
+                                    labelTypog.setText("Typographi et ponctuation : " + newLabelTypog);
+                                    labelGram.setText("Grammaire : " + newLabelGram);
                                 });
 
                             }
@@ -204,7 +224,7 @@ public class FXMLDocumentController implements Initializable {
 
                         Platform.runLater(() -> areaResult.getChildren().clear());
                         int numTotal = webElements.size();
-                        int numCorecte = 0, numError = 0;
+                        int numCorecte = 0, numExamine = 0, numOrto = 0, numTypog = 0, numGram = 0;
                         for (int w = 0; w < webElements.size(); w++) {
 
                             String myString;
@@ -213,28 +233,43 @@ public class FXMLDocumentController implements Initializable {
                                 myString = myString + " => " + webElements.elementAt(w).getSuggest();
                             }
 
+
                             text = new Text(myString);
                             text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
-
-                            if (webElements.elementAt(w).getState().equals("waiting")) {
-                                text.setFill(Color.rgb(162, 136, 211));
+                            if (webElements.elementAt(w).getState().equals("typo")) {
+                                text.setFill(Color.web("#5e80fc"));
                             } else if (webElements.elementAt(w).getState().equals("correct")) {
-                                text.setFill(Color.rgb(36, 221, 123));
+                                text.setFill(Color.web("#3fdd7b"));
                                 numCorecte++;
-                            } else if (webElements.elementAt(w).getState().equals("wrong")) {
-                                text.setFill(Color.rgb(255, 93, 93));
-                                numError++;
+                            } else if (webElements.elementAt(w).getState().equals("ortographe")) {
+                                text.setFill(Color.web("#e86868"));
+                                numOrto++;
+                            } else if (webElements.elementAt(w).getState().equals("grammaire")) {
+                                text.setFill(Color.web("#ddb83e"));
+                                numCorecte++;
+                            } else if (webElements.elementAt(w).getState().equals("examiner")) {
+                                text.setFill(Color.web("#f64dff"));
+                                numOrto++;
+                            } else if (webElements.elementAt(w).getState().equals("waiting")) {
+                                text.setFill(Color.web("#ffffff"));
+                                numOrto++;
                             }
                             Text tempText = text;
                             //update new Gui
                             String newLabelCorrect = String.valueOf(numCorecte);
-                            String newLabelError = String.valueOf(numError);
                             String newLabelTotal = String.valueOf(numTotal);
+                            String newLabelExamine = String.valueOf(numExamine);
+                            String newLabelOrto = String.valueOf(numOrto);
+                            String newLabelTypog = String.valueOf(numTypog);
+                            String newLabelGram = String.valueOf(numGram);
                             Platform.runLater(() -> {
                                 areaResult.getChildren().add(tempText);
-                                labelCorrect.setText("Nombre Correcte : " + newLabelCorrect);
-                                labelError.setText("Nombre Erreurs : " + newLabelError);
-                                labelParsed.setText("Nombre Total :" + newLabelTotal);
+                                labelCorrect.setText("Correcte : " + newLabelCorrect);
+                                labelTotal.setText("Total : " + newLabelTotal);
+                                labelExamine.setText("A Examiner : " + newLabelExamine);
+                                labelOrto.setText("Ortographe : " + newLabelOrto);
+                                labelTypog.setText("Typographi et ponctuation : " + newLabelTypog);
+                                labelGram.setText("Grammaire : " + newLabelGram);
                             });
 
                         }
@@ -327,7 +362,7 @@ public class FXMLDocumentController implements Initializable {
 
                         Platform.runLater(() -> areaResult.getChildren().clear());
                         int numTotal = webElements.size();
-                        int numCorecte = 0, numError = 0;
+                        int numCorecte = 0, numExamine = 0, numOrto = 0, numTypog = 0, numGram = 0;
                         for (int w = 0; w < webElements.size(); w++) {
 
                             String myString;
@@ -338,26 +373,41 @@ public class FXMLDocumentController implements Initializable {
 
                             text = new Text(myString);
                             text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
-
-                            if (webElements.elementAt(w).getState().equals("waiting")) {
-                                text.setFill(Color.rgb(162, 136, 211));
+                            if (webElements.elementAt(w).getState().equals("typo")) {
+                                text.setFill(Color.web("#5e80fc"));
                             } else if (webElements.elementAt(w).getState().equals("correct")) {
-                                text.setFill(Color.rgb(36, 221, 123));
+                                text.setFill(Color.web("#3fdd7b"));
                                 numCorecte++;
-                            } else if (webElements.elementAt(w).getState().equals("wrong")) {
-                                text.setFill(Color.rgb(255, 93, 93));
-                                numError++;
+                            } else if (webElements.elementAt(w).getState().equals("ortographe")) {
+                                text.setFill(Color.web("#e86868"));
+                                numOrto++;
+                            } else if (webElements.elementAt(w).getState().equals("grammaire")) {
+                                text.setFill(Color.web("#ddb83e"));
+                                numCorecte++;
+                            } else if (webElements.elementAt(w).getState().equals("examiner")) {
+                                text.setFill(Color.web("#f64dff"));
+                                numOrto++;
+                            } else if (webElements.elementAt(w).getState().equals("waiting")) {
+                                text.setFill(Color.web("#ffffff"));
+                                numOrto++;
                             }
                             Text tempText = text;
                             //update new Gui
                             String newLabelCorrect = String.valueOf(numCorecte);
-                            String newLabelError = String.valueOf(numError);
                             String newLabelTotal = String.valueOf(numTotal);
+                            String newLabelExamine = String.valueOf(numExamine);
+                            String newLabelOrto = String.valueOf(numOrto);
+                            String newLabelTypog = String.valueOf(numTypog);
+                            String newLabelGram = String.valueOf(numGram);
+
                             Platform.runLater(() -> {
                                 areaResult.getChildren().add(tempText);
-                                labelCorrect.setText("Nombre Correcte : " + newLabelCorrect);
-                                labelError.setText("Nombre Erreurs : " + newLabelError);
-                                labelParsed.setText("Nombre Total :" + newLabelTotal);
+                                labelCorrect.setText("Correcte : " + newLabelCorrect);
+                                labelTotal.setText("Total : " + newLabelTotal);
+                                labelExamine.setText("A Examiner : " + newLabelExamine);
+                                labelOrto.setText("Ortographe : " + newLabelOrto);
+                                labelTypog.setText("Typographi et ponctuation : " + newLabelTypog);
+                                labelGram.setText("Grammaire : " + newLabelGram);
                             });
 
                         }
