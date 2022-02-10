@@ -7,33 +7,48 @@
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane id="AnchorPane" prefHeight="585.0" prefWidth="998.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.beyn.spell.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="676.0" prefWidth="1115.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.beyn.spell.FXMLDocumentController">
     <children>
-      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="448.0" layoutY="52.0" mnemonicParsing="false" onAction="#Event" prefHeight="50.0" prefWidth="102.0" stylesheets="@styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="498.0" layoutY="23.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="121.0" stylesheets="@styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
          <font>
-            <Font name="Ebrima Bold" size="18.0" />
+            <Font name="Ebrima Bold" size="22.0" />
          </font></Button>
-      <Label fx:id="labelParsed" alignment="CENTER" contentDisplay="CENTER" layoutX="95.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Total :" textAlignment="CENTER" textFill="#a288d3">
+      <Label fx:id="labelTotal" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="209.0" prefHeight="41.0" prefWidth="199.0" text="Total :" textAlignment="CENTER" textFill="WHITE">
          <font>
-            <Font name="Cambria Bold" size="18.0" />
+            <Font name="Cambria Bold" size="21.0" />
          </font></Label>
-      <Label fx:id="labelCorrect" alignment="CENTER" contentDisplay="CENTER" layoutX="397.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Correcte :" textAlignment="CENTER" textFill="#3fdd7b">
+      <Label fx:id="labelCorrect" alignment="CENTER" contentDisplay="CENTER" layoutX="50.0" layoutY="293.0" prefHeight="41.0" prefWidth="199.0" text="Correcte :" textAlignment="CENTER" textFill="#3fdd7b">
          <font>
-            <Font name="Cambria Bold" size="18.0" />
+            <Font name="Cambria Bold" size="21.0" />
          </font></Label>
-      <ScrollPane fx:id="myScrollPane" layoutX="19.0" layoutY="314.0" prefHeight="265.0" prefWidth="954.0" style="-fx-background-color: #1c1b1b;" stylesheets="@styleRun.css">
+      <ScrollPane fx:id="myScrollPane" layoutX="81.0" layoutY="375.0" prefHeight="265.0" prefWidth="954.0" style="-fx-background-color: #1c1b1b;" stylesheets="@styleRun.css">
          <content>
             <TextFlow fx:id="areaResult" prefHeight="263.0" prefWidth="955.0" style="-fx-background-color: #1c1b1b;" stylesheets="@styleRun.css" textAlignment="CENTER" />
          </content>
       </ScrollPane>
-      <Label fx:id="labelError" alignment="CENTER" contentDisplay="CENTER" layoutX="700.0" layoutY="219.0" prefHeight="41.0" prefWidth="199.0" text="Nombre Erreurs :" textAlignment="CENTER" textFill="#ff5d5d">
+      <Label fx:id="labelOrto" alignment="CENTER" contentDisplay="CENTER" layoutX="459.0" layoutY="209.0" prefHeight="41.0" prefWidth="199.0" text="Ortographe :" textAlignment="CENTER" textFill="#e86868">
          <font>
-            <Font name="Cambria Bold" size="18.0" />
+            <Font name="Cambria Bold" size="21.0" />
          </font></Label>
-      <Button fx:id="buttonResult" alignment="CENTER" contentDisplay="CENTER" layoutX="448.0" layoutY="119.0" mnemonicParsing="false" onAction="#Event" prefHeight="50.0" prefWidth="102.0" stylesheets="@styleRun.css" text="Result" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="buttonResult" alignment="CENTER" contentDisplay="CENTER" layoutX="498.0" layoutY="103.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="121.0" stylesheets="@styleRun.css" text="Result" textAlignment="CENTER" textFill="WHITE">
          <font>
-            <Font name="Ebrima Bold" size="18.0" />
+            <Font name="Ebrima Bold" size="22.0" />
          </font>
       </Button>
+      <Label fx:id="labelGram" alignment="CENTER" contentDisplay="CENTER" layoutX="458.0" layoutY="293.0" prefHeight="41.0" prefWidth="199.0" text="Grammaire :" textAlignment="CENTER" textFill="#ddb83e">
+         <font>
+            <Font name="Cambria Bold" size="21.0" />
+         </font>
+      </Label>
+      <Label fx:id="labelExamine" alignment="CENTER" contentDisplay="CENTER" layoutX="830.0" layoutY="296.0" prefHeight="41.0" prefWidth="199.0" text="A Examiner :" textAlignment="CENTER" textFill="#f64dff">
+         <font>
+            <Font name="Cambria Bold" size="21.0" />
+         </font>
+      </Label>
+      <Label fx:id="labelTypog" alignment="CENTER" contentDisplay="CENTER" layoutX="830.0" layoutY="208.0" prefHeight="63.0" prefWidth="199.0" text="Typographi et ponctuation : " textAlignment="CENTER" textFill="#5e80fc" wrapText="true">
+         <font>
+            <Font name="Cambria Bold" size="21.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>
