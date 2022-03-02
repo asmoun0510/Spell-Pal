@@ -1,4 +1,6 @@
-package io.beyn.spell;/*
+package io.beyn.spell;
+
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -153,8 +155,16 @@ public class FXMLDocumentController implements Initializable {
                     for (int j = 0; j < webElements.size(); j++) {
                         if (webElements.get(j).getState().equals("waiting") && webElements.get(j).getLanguage().equals("FRENCH")) {
                             try {
-                                wait.until(ExpectedConditions.elementToBeClickable(By.id("btnClear"))).click();
-                                System.out.println("1.btnClear cliked");
+                                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//body//p"))).clear();
+                                System.out.println("cleared");
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                                driverScribensFR.get("https://www.Scribens.fr");
+                                j--;
+                                break;
+                            }
+                            try {
+                                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//body//p"))).sendKeys(webElements.get(j).getText());
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 driverScribensFR.get("https://www.Scribens.fr");
@@ -291,19 +301,16 @@ public class FXMLDocumentController implements Initializable {
                     for (int j = 0; j < webElements.size(); j++) {
                         if (webElements.get(j).getState().equals("waiting")) {
                             try {
-                                wait.until(ExpectedConditions.elementToBeClickable(By.id("btnClear"))).click();
-                                System.out.println("1.btnClear cliked");
+                                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//body//p"))).clear();
+                                System.out.println("cleared");
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 driverScribensENG.get("https://www.Scribens.com");
                                 j--;
                                 break;
                             }
-
                             try {
-                                wait.until(ExpectedConditions.and(
-                                        ExpectedConditions.visibilityOfElementLocated(By.id("startText")),
-                                        ExpectedConditions.elementToBeClickable(By.id("btnSpell"))));
+                                wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//body//p"))).sendKeys(webElements.get(j).getText());
                             } catch (Exception e) {
                                 e.printStackTrace();
                                 driverScribensENG.get("https://www.Scribens.com");
