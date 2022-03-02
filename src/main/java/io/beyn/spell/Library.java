@@ -1,5 +1,6 @@
 package io.beyn.spell;
 
+import java.time.Duration;
 import java.util.Iterator;
 import java.util.Vector;
 
@@ -45,8 +46,9 @@ public class Library {
         return driver;
     }
 
-    // start Scribensin headless mode ENG
-    public WebDriver initilizeScribensENG() {
+
+    // start browser based on selected language
+    public WebDriver startBrowserChecker(String language) {
         ChromeOptions optionsHeadless = new ChromeOptions();
         optionsHeadless.addArguments("--start-maximized");
         optionsHeadless.addArguments("--disable-extensions");
@@ -55,37 +57,25 @@ public class Library {
         optionsHeadless.addArguments("--no-sandbox");
         optionsHeadless.addArguments("--ignore-certificate-errors");
         // optionsHeadless.addArguments("--headless");
-        WebDriver driverScribensENG = new ChromeDriver(optionsHeadless);
-        driverScribensENG.get("https://www.scribens.com/");
-        return driverScribensENG;
-    }
-
-
-    // start Scribensin headless mode FR
-    public WebDriver initilizeScribensFR() {
-        ChromeOptions optionsHeadless = new ChromeOptions();
-        optionsHeadless.addArguments("--start-maximized");
-        optionsHeadless.addArguments("--disable-extensions");
-        optionsHeadless.addArguments("--incognito");
-        optionsHeadless.addArguments("--disable-popup-blocking");
-        optionsHeadless.addArguments("--no-sandbox");
-        optionsHeadless.addArguments("--ignore-certificate-errors");
-        // optionsHeadless.addArguments("--headless");
-        WebDriver driverScribensFR = new ChromeDriver(optionsHeadless);
-        driverScribensFR.get("https://www.scribens.fr/");
-        return driverScribensFR;
+        WebDriver driverSpellCheck = new ChromeDriver(optionsHeadless);
+        switch (language) {
+            case "ENG" -> driverSpellCheck.get("https://www.scribens.com/");
+            case "FR" -> driverSpellCheck.get("https://www.scribens.fr/");
+            case "AR" -> driverSpellCheck.get("https://www.modakik.fr/");
+        }
+        return driverSpellCheck;
     }
 
     // return text elements of a web page
     public String getContentPage(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, 30);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body")));
         return element.getText();
     }
 
     // return HTML of a web page
     public String getSourcePage(WebDriver driver) {
-        WebDriverWait wait = new WebDriverWait(driver, 60);
+        WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(30));
         WebElement element = wait.until(ExpectedConditions.visibilityOfElementLocated(By.tagName("body")));
         //System.out.println (driver.getPageSource()) ;
         return driver.getPageSource();
@@ -94,7 +84,7 @@ public class Library {
     // parse String element 
     public Vector<Element> parseElements(String e, Vector<Element> list) {
         Element newElement;
-        Boolean exists;
+        boolean exists;
         String[] lines = e.split("[\\r\\n]+");
 
         // traitement
@@ -107,7 +97,7 @@ public class Library {
                 // take itterator to begining of vector
                 Iterator<Element> itr = list.iterator();
                 //searcj if already exists 
-                while (itr.hasNext() && exists == false) {
+                while (itr.hasNext() && !exists) {
                     exists = itr.next().getText().equals(line);
                 }
 
@@ -136,9 +126,7 @@ public class Library {
     }
 
     private boolean filterData(String line) {
-        if (line.length() > 0 && !line.matches("[0-9]+") && !line.contains("@") && !line.equals("FR") && !line.equals("EN") && !line.equals("AR"))
-            return true;
-        return false;
+        return line.length() > 0 && !line.matches("[0-9]+") && !line.contains("@") && !line.equals("FR") && !line.equals("EN") && !line.equals("AR");
     }
     
     /*public String checkAlert (WebDriver driver) {
@@ -167,7 +155,7 @@ public class Library {
         //UNKNOWN
         LanguageDetector detector = LanguageDetectorBuilder.fromLanguages(ENGLISH, FRENCH, ARABIC).build();
         Language detectedLanguage = detector.detectLanguageOf(myString);
-        System.out.println(detectedLanguage.toString());
+        System.out.println(detectedLanguage);
         return detectedLanguage.toString();
 
     }
