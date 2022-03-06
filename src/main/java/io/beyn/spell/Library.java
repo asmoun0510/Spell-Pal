@@ -3,15 +3,12 @@ package io.beyn.spell;
 import java.time.Duration;
 import java.util.Iterator;
 import java.util.Vector;
-
 import org.jsoup.Jsoup;
-import org.openqa.selenium.Alert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
-import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import com.github.pemistahl.lingua.api.*;
@@ -49,6 +46,7 @@ public class Library {
 
     // start browser based on selected language
     public WebDriver startBrowserChecker(String language) {
+        System.out.println(language + "///////////////");
         ChromeOptions optionsHeadless = new ChromeOptions();
         optionsHeadless.addArguments("--start-maximized");
         optionsHeadless.addArguments("--disable-extensions");
@@ -59,7 +57,7 @@ public class Library {
         // optionsHeadless.addArguments("--headless");
         WebDriver driverSpellCheck = new ChromeDriver(optionsHeadless);
         switch (language) {
-            case "ENG" -> driverSpellCheck.get("https://www.scribens.com/");
+            case "EN" -> driverSpellCheck.get("https://www.scribens.com/");
             case "FR" -> driverSpellCheck.get("https://www.scribens.fr/");
             case "AR" -> driverSpellCheck.get("https://www.modakik.fr/");
         }
@@ -112,11 +110,9 @@ public class Library {
                      */
                     //    String language =
 
-
                     /* Java */
 
-
-                    newElement = new Element(line, "waiting", "nothing", detctedLanguage(line));
+                    newElement = new Element(line, "waiting", "nothing", detectedLanguage(line));
                     //add element to vector
                     list.add(newElement);
                 }
@@ -126,7 +122,7 @@ public class Library {
     }
 
     private boolean filterData(String line) {
-        return line.length() > 0 && !line.matches("[0-9]+") && !line.contains("@") && !line.equals("FR") && !line.equals("EN") && !line.equals("AR");
+        return line.length() > 0 && !line.matches("[0-9]+") && !line.contains("@");
     }
     
     /*public String checkAlert (WebDriver driver) {
@@ -138,26 +134,16 @@ public class Library {
 
     }*/
 
-    public String getSugesstion(String e) {
-
+    public String getSuggestion(String e) {
         return Jsoup.parse(e).text();
-
-    }
-
-    public WebDriver changeToENG(WebDriver driver) {
-
-
-        return driver;
     }
 
 
-    public String detctedLanguage(String myString) {
-        //UNKNOWN
+    public String detectedLanguage(String myString) {
+        //check a language corresponds with the chosen language
         LanguageDetector detector = LanguageDetectorBuilder.fromLanguages(ENGLISH, FRENCH, ARABIC).build();
         Language detectedLanguage = detector.detectLanguageOf(myString);
-        System.out.println(detectedLanguage);
         return detectedLanguage.toString();
-
     }
 
 }

@@ -26,9 +26,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
+import org.openqa.selenium.*;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 
@@ -75,7 +74,6 @@ public class FXMLDocumentController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         // setting the icons for language buttons
         ImageView imageViewFR = new ImageView(getClass().getResource("french_icon.png").toExternalForm());
         ImageView imageViewEN = new ImageView(getClass().getResource("english_icon.png").toExternalForm());
@@ -83,7 +81,7 @@ public class FXMLDocumentController implements Initializable {
         buttonFR.setGraphic(imageViewFR);
         buttonEN.setGraphic(imageViewEN);
         buttonAR.setGraphic(imageViewAR);
-        WebDriverManager.chromedriver().browserVersion("97.0.4692.99").setup();
+        WebDriverManager.chromedriver().browserVersion("99.0.4844.51").setup();
         labelCorrect.setText("Correcte : 0");
         labelTotal.setText("Total : 0");
         labelExamine.setText("A Examiner : 0");
@@ -193,12 +191,35 @@ public class FXMLDocumentController implements Initializable {
                 while (true) {
                     for (Element webElement : webElements) {
                         if (webElement.getState().equals("waiting")) {
+                            try {
+                                Thread.sleep(6000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+                            System.out.println("get the iframe ");
+                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='TextArea']//iframe")));
 
-                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//body//p"))).clear();
-                            System.out.println("cleared");
-                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//body//p"))).sendKeys(webElement.getText());
-                            driverChecker.findElement(By.id("startText")).sendKeys(webElement.getText());
-                            System.out.println("2.startText sendkeys");
+                            WebElement iframe = driverChecker.findElement(By.xpath("//div[@id='TextArea']//iframe"));
+                            // switch to iframe
+                            driverChecker.switchTo().frame(iframe);
+                            WebElement textArea = driverChecker.findElement(By.tagName("p"));
+                            textArea.clear();
+                            textArea.sendKeys(webElement.getText());
+                            //switch to main
+                            driverChecker.switchTo().defaultContent();
+                            if( currentLanguage.equals("FR")) driverChecker.findElement(By.xpath("//div[@class='button'][contains(.,'Vérifier')]")).click();
+                            else  if( currentLanguage.equals("EN")) driverChecker.findElement(By.xpath("//div[@class='button'][contains(.,'Check')]")).click();
+                            //switch to iframe
+                            driverChecker.switchTo().frame(iframe);
+                            try {
+                                Thread.sleep(2000);
+                            } catch (InterruptedException e) {
+                                e.printStackTrace();
+                            }
+
+
+                            System.out.println(driverChecker.findElement(By.tagName("p")).getAttribute("innerHTML"));
+
                             driverChecker.findElement(By.id("btnSpell")).click();
                             System.out.println("3. btnSpell clicked");
                             correct = driverChecker.findElements(By.xpath("*//label[contains(@class, 'correctmsg') and contains(@style, 'display: inline;')]"));
@@ -214,7 +235,7 @@ public class FXMLDocumentController implements Initializable {
                                 if (mistakes.size() > 0) {
                                     StringBuilder suggestion = new StringBuilder();
                                     for (WebElement m : mistakes) {
-                                        suggestion.append(lib.getSugesstion(m.getAttribute("tooltip")));
+                                        suggestion.append(lib.getSuggestion(m.getAttribute("tooltip")));
                                     }
                                     webElement.setState("wrong");
                                     webElement.setSuggest(suggestion.toString());

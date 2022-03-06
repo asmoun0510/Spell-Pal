@@ -12,7 +12,6 @@ import java.util.Objects;
  * @author asmou
  */
 public class Element {
-
     String text = "";
     String state = "";
     String suggest = "";
