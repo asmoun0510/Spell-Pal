@@ -3,11 +3,13 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.TextFlow?>
 
-<AnchorPane id="AnchorPane" prefHeight="891.0" prefWidth="1282.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.beyn.spell.FXMLDocumentController">
+<AnchorPane id="AnchorPane" prefHeight="914.0" prefWidth="1282.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.beyn.spell.FXMLDocumentController">
     <children>
       <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="489.0" layoutY="68.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="121.0" stylesheets="@styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
          <font>
@@ -15,32 +17,32 @@
          </font></Button>
       <AnchorPane fx:id="ForeignPan" layoutX="121.0" layoutY="265.0" prefHeight="129.0" prefWidth="1040.0">
          <children>
-            <Label fx:id="labelTotal" alignment="CENTER" contentDisplay="CENTER" layoutY="1.0" prefHeight="41.0" prefWidth="199.0" text="Total :" textAlignment="CENTER" textFill="WHITE">
+            <Label fx:id="labelWhite" alignment="CENTER" contentDisplay="CENTER" layoutY="11.0" prefHeight="41.0" prefWidth="199.0" text="Total :" textAlignment="CENTER" textFill="WHITE">
                <font>
                   <Font name="Cambria Bold" size="21.0" />
                </font>
             </Label>
-            <Label fx:id="labelCorrect" alignment="CENTER" contentDisplay="CENTER" layoutY="85.0" prefHeight="41.0" prefWidth="199.0" text="Correcte :" textAlignment="CENTER" textFill="#3fdd7b">
+            <Label fx:id="labelGreen" alignment="CENTER" contentDisplay="CENTER" layoutY="85.0" prefHeight="41.0" prefWidth="199.0" text="Correcte :" textAlignment="CENTER" textFill="#2cff00">
                <font>
                   <Font name="Cambria Bold" size="21.0" />
                </font>
             </Label>
-            <Label fx:id="labelOrto" alignment="CENTER" contentDisplay="CENTER" layoutX="384.0" layoutY="1.0" prefHeight="41.0" prefWidth="199.0" text="Ortographe :" textAlignment="CENTER" textFill="#e86868">
+            <Label fx:id="labelOrange" alignment="CENTER" contentDisplay="CENTER" layoutX="377.0" layoutY="11.0" prefHeight="41.0" prefWidth="199.0" text="Orthographe :" textAlignment="CENTER" textFill="#e86868">
                <font>
                   <Font name="Cambria Bold" size="21.0" />
                </font>
             </Label>
-            <Label fx:id="labelGram" alignment="CENTER" contentDisplay="CENTER" layoutX="384.0" layoutY="85.0" prefHeight="41.0" prefWidth="199.0" text="Grammaire :" textAlignment="CENTER" textFill="#ddb83e">
+            <Label fx:id="labelYellow" alignment="CENTER" contentDisplay="CENTER" layoutX="384.0" layoutY="63.0" prefHeight="63.0" prefWidth="184.0" text="Grammaire / Verbes :" textAlignment="CENTER" textFill="#ddb83e" wrapText="true">
                <font>
                   <Font name="Cambria Bold" size="21.0" />
                </font>
             </Label>
-            <Label fx:id="labelExamine" alignment="CENTER" contentDisplay="CENTER" layoutX="759.0" layoutY="88.0" prefHeight="41.0" prefWidth="199.0" text="A Examiner :" textAlignment="CENTER" textFill="#f64dff">
+            <Label fx:id="labelPink" alignment="CENTER" contentDisplay="CENTER" layoutX="740.0" layoutY="63.0" prefHeight="63.0" prefWidth="177.0" text="À Examiner / Suggestions :" textAlignment="CENTER" textFill="#f64dff" wrapText="true">
                <font>
                   <Font name="Cambria Bold" size="21.0" />
                </font>
             </Label>
-            <Label fx:id="labelTypog" alignment="CENTER" contentDisplay="CENTER" layoutX="759.0" prefHeight="63.0" prefWidth="199.0" text="Typographi et ponctuation : " textAlignment="CENTER" textFill="#5e80fc" wrapText="true">
+            <Label fx:id="labelBleu" alignment="CENTER" contentDisplay="CENTER" layoutX="729.0" prefHeight="63.0" prefWidth="199.0" text="Topographie / ponctuation : " textAlignment="CENTER" textFill="#5e80fc" wrapText="true">
                <font>
                   <Font name="Cambria Bold" size="21.0" />
                </font>
@@ -77,5 +79,10 @@
             <Font name="Arial Bold" size="14.0" />
          </font>
       </Button>
+      <ImageView fitHeight="119.0" fitWidth="115.0" layoutX="15.0" layoutY="17.0" pickOnBounds="true" preserveRatio="true">
+         <image>
+            <Image url="@beyn_logo.png" />
+         </image>
+      </ImageView>
     </children>
 </AnchorPane>

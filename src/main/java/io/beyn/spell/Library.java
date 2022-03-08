@@ -1,7 +1,6 @@
 package io.beyn.spell;
 
 import java.time.Duration;
-import java.util.Iterator;
 import java.util.Vector;
 import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
@@ -11,7 +10,7 @@ import org.openqa.selenium.chrome.ChromeDriver;
 import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import com.github.pemistahl.lingua.api.*;
+
 
 import static com.github.pemistahl.lingua.api.Language.*;
 /*
@@ -89,30 +88,19 @@ public class Library {
         // les fihier
         // action => les page
         for (String line : lines) {
-            //  System.out.println(lines[i]);
             if (filterData(line)) {
                 exists = false;
-                // take itterator to begining of vector
-                Iterator<Element> itr = list.iterator();
-                //searcj if already exists 
-                while (itr.hasNext() && !exists) {
-                    exists = itr.next().getText().equals(line);
+                for (int i=0; i< list.size(); i++){
+                    if (line.equals(list.get(i).text)) {
+                        exists = true;
+                        continue;
+                    }
                 }
 
                 if (!exists) {
-                    //creat element
-                    /*
-                    state => waiting means not treated yet  (black) 100 100 100
-                    => correct means treated and passed (Green) 60 200 80
-                    => spell means treated and spell error  (Red) 250 85 85
-                    => grammar means treated and grammar  error  (Orange) 250 130 50
-                    suggestion => editting sugestions 
-                     */
-                    //    String language =
-
-                    /* Java */
-
-                    newElement = new Element(line, "waiting", "nothing", detectedLanguage(line));
+                    newElement = new Element();
+                    newElement.setText(line);
+                    newElement.setState("waiting");
                     //add element to vector
                     list.add(newElement);
                 }
@@ -134,16 +122,10 @@ public class Library {
 
     }*/
 
-    public String getSuggestion(String e) {
+    public String getTextHTML(String e) {
         return Jsoup.parse(e).text();
     }
 
 
-    public String detectedLanguage(String myString) {
-        //check a language corresponds with the chosen language
-        LanguageDetector detector = LanguageDetectorBuilder.fromLanguages(ENGLISH, FRENCH, ARABIC).build();
-        Language detectedLanguage = detector.detectLanguageOf(myString);
-        return detectedLanguage.toString();
-    }
 
 }

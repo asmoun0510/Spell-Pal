@@ -1,5 +1,6 @@
 package io.beyn.spell;
 
+import java.util.List;
 import java.util.Objects;
 
 /*
@@ -12,16 +13,25 @@ import java.util.Objects;
  * @author asmou
  */
 public class Element {
-    String text = "";
-    String state = "";
-    String suggest = "";
-    String language = "";
+    String text;
+    String state;
+    List<Error> errors;
 
-    public Element(String text, String state, String suggest, String language) {
+    public Element(String text, String state) {
         this.text = text;
         this.state = state;
-        this.suggest = suggest;
-        this.language = language;
+    }
+
+    public Element() {
+
+    }
+
+    public void addError(Error error) {
+        this.errors.add(error);
+    }
+
+    public int getNumberError() {
+        return this.errors.size();
     }
 
     public void setText(String text) {
@@ -33,13 +43,6 @@ public class Element {
         this.state = state;
     }
 
-    public void setSuggest(String suggest) {
-        this.suggest = suggest;
-    }
-
-    public void setLanguage(String language) {
-        this.language = language;
-    }
 
     public String getText() {
         return this.text;
@@ -49,34 +52,5 @@ public class Element {
         return this.state;
     }
 
-    public String getSuggest() {
-        return this.suggest;
-    }
-
-    public String getLanguage() {
-        return this.language;
-    }
-
-    // required for vector check if exists 
-    @Override
-    public boolean equals(Object o) {
-        // self check
-        if (this == o) {
-            return true;
-        }
-        // null check
-        if (o == null) {
-            return false;
-        }
-        // type check and cast
-        if (getClass() != o.getClass()) {
-            return false;
-        }
-        Element element = (Element) o;
-        // field comparison
-        return Objects.equals(text, element.text)
-                && Objects.equals(state, element.state)
-                && Objects.equals(suggest, element.suggest);
-    }
 
 }
