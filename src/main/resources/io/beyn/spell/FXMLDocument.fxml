@@ -11,7 +11,7 @@
 
 <AnchorPane id="AnchorPane" prefHeight="914.0" prefWidth="1282.0" style="-fx-background-color: #1c1b1b;" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="io.beyn.spell.FXMLDocumentController">
     <children>
-      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="489.0" layoutY="68.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="121.0" stylesheets="@styleRun.css" text="Run" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="buttonRun" alignment="CENTER" contentDisplay="CENTER" layoutX="446.0" layoutY="68.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="164.0" stylesheets="@styleRun.css" text="Exécuter" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="24.0" />
          </font></Button>
@@ -54,12 +54,12 @@
             <TextFlow fx:id="areaResult" prefHeight="435.0" prefWidth="1257.0" style="-fx-background-color: #1c1b1b;" stylesheets="@styleRun.css" textAlignment="CENTER" />
          </content>
       </ScrollPane>
-      <Button fx:id="buttonResult" alignment="CENTER" contentDisplay="CENTER" layoutX="653.0" layoutY="68.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="121.0" stylesheets="@styleRun.css" text="Result" textAlignment="CENTER" textFill="WHITE">
+      <Button fx:id="buttonResult" alignment="CENTER" contentDisplay="CENTER" layoutX="653.0" layoutY="68.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="164.0" stylesheets="@styleRun.css" text="Résultat" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Arial Bold" size="24.0" />
          </font>
       </Button>
-      <Label fx:id="labelLanguage" alignment="CENTER" contentDisplay="CENTER" layoutX="322.0" layoutY="179.0" prefHeight="41.0" prefWidth="284.0" text="Language selectioné :  FR" textAlignment="CENTER" textFill="WHITE">
+      <Label fx:id="labelLanguage" alignment="CENTER" contentDisplay="CENTER" layoutX="322.0" layoutY="179.0" prefHeight="41.0" prefWidth="284.0" text="Language sélectionné :  FR" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Cambria Bold" size="21.0" />
          </font>
@@ -84,5 +84,10 @@
             <Image url="@beyn_logo.png" />
          </image>
       </ImageView>
+      <Label alignment="CENTER" contentDisplay="CENTER" layoutX="43.0" layoutY="130.0" prefHeight="26.0" prefWidth="78.0" text="Beta version" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="System Bold" size="12.0" />
+         </font>
+      </Label>
     </children>
 </AnchorPane>

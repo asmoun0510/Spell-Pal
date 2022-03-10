@@ -1,7 +1,6 @@
 package io.beyn.spell;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Vector;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -15,7 +14,7 @@ import java.util.Objects;
 public class Element {
     String text;
     String state;
-    List<Error> errors;
+    Vector<Error> errors = new Vector<>();
 
     public Element(String text, String state) {
         this.text = text;
@@ -30,9 +29,7 @@ public class Element {
         this.errors.add(error);
     }
 
-    public int getNumberError() {
-        return this.errors.size();
-    }
+
 
     public void setText(String text) {
         this.text = text;
@@ -43,13 +40,17 @@ public class Element {
         this.state = state;
     }
 
-
+    public int getNumberError() {
+        return this.errors.size();
+    }
     public String getText() {
         return this.text;
     }
-
     public String getState() {
         return this.state;
+    }
+    public Vector<Error> getErrors () {
+        return this.errors;
     }
 
 

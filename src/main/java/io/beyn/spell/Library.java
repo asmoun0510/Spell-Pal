@@ -2,6 +2,7 @@ package io.beyn.spell;
 
 import java.time.Duration;
 import java.util.Vector;
+
 import org.jsoup.Jsoup;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -60,6 +61,16 @@ public class Library {
             case "FR" -> driverSpellCheck.get("https://www.scribens.fr/");
             case "AR" -> driverSpellCheck.get("https://www.modakik.fr/");
         }
+        switch (language) {
+            case "EN", "FR" -> {
+                WebDriverWait wait = new WebDriverWait(driverSpellCheck, Duration.ofSeconds(5));
+                try {
+                    wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@class='Cor-RedButton' and contains(., 'Cancel')]"))).click();
+                } catch (Exception ex) {
+                   System.out.println("confirm pop up no found");
+                }
+            }
+        }
         return driverSpellCheck;
     }
 
@@ -90,7 +101,7 @@ public class Library {
         for (String line : lines) {
             if (filterData(line)) {
                 exists = false;
-                for (int i=0; i< list.size(); i++){
+                for (int i = 0; i < list.size(); i++) {
                     if (line.equals(list.get(i).text)) {
                         exists = true;
                         continue;
@@ -125,7 +136,6 @@ public class Library {
     public String getTextHTML(String e) {
         return Jsoup.parse(e).text();
     }
-
 
 
 }

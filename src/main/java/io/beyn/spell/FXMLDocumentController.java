@@ -61,7 +61,7 @@ public class FXMLDocumentController implements Initializable {
 
     String currentLanguage = "FR";
     Library lib = new Library();
-    Vector<Element> webElements = new Vector<>();
+    Vector<Element> myElements = new Vector<>();
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -102,57 +102,14 @@ public class FXMLDocumentController implements Initializable {
                 String newPage, contentPage;
                 WebDriver driverBrowser = lib.initilizeBrowser("www.google.com");
                 String initialPage = lib.getSourcePage(driverBrowser);
-                Text text;
                 while (true) {
                     try {
                         Thread.sleep(500);
                         newPage = lib.getSourcePage(driverBrowser);
                         if (!initialPage.equals(newPage)) {
                             contentPage = lib.getContentPage(driverBrowser);
-                            webElements = lib.parseElements(contentPage, webElements);
-                            Platform.runLater(() -> areaResult.getChildren().clear());
-                            int numTotal = webElements.size();
-                            int numCorrect = 0, numPink = 0, numOrange = 0, numBleu = 0, numYellow = 0;
-                            for (int w = 0; w < webElements.size(); w++) {
-                                String myString;
-                                // myString = myString + " => " + webElements.elementAt(w).getSuggest();
-                                myString = "\n " + webElements.elementAt(w).getText();
-                                if (webElements.elementAt(w).getState().equals("error")) {
-                                    // get list of errors
-                                }
-                                text = new Text(myString);
-                                text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
-                                if (webElements.elementAt(w).getState().equals("correct")) {
-                                    text.setFill(Color.web("#2cff00"));
-                                    numCorrect++;
-                                } else if (webElements.elementAt(w).getState().equals("waiting")) {
-                                    text.setFill(Color.web("#ffffff"));
-
-                                } else if (webElements.elementAt(w).getState().equals("wrong")) {
-                                    text.setFill(Color.web("#ffffff"));
-                                }
-                                
-                                Text tempText = text;
-                                //update new Gui
-                                String newLabelGreen = String.valueOf(numCorrect);
-                                String newLabelWhite = String.valueOf(numTotal);
-                                String newLabelPink = String.valueOf(numPink);
-                                String newLabelOrange = String.valueOf(numOrange);
-                                String newLabelBleu = String.valueOf(numBleu);
-                                String newLabelYellow = String.valueOf(numYellow);
-
-                                Platform.runLater(() -> {
-                                    areaResult.getChildren().add(tempText);
-                                    labelGreen.setText("Correcte : " + newLabelGreen);
-                                    labelWhite.setText("Total : " + newLabelWhite);
-                                    labelPink.setText("À Examiner / Suggestions : " + newLabelPink);
-                                    labelOrange.setText("Orthographe : " + newLabelOrange);
-                                    labelBleu.setText("Topographie / ponctuation : " + newLabelBleu);
-                                    labelYellow.setText("Grammaire / Verbes : " + newLabelYellow);
-                                  });
-                            }
+                            myElements = lib.parseElements(contentPage, myElements);
                             initialPage = newPage;
-                            //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
                         }
                     } catch (Exception ex) {
                         ex.printStackTrace();
@@ -163,29 +120,33 @@ public class FXMLDocumentController implements Initializable {
 
             //  start browser based on language chosen by user and visit
             Thread threadChecker = new Thread(() -> {
+
                 WebDriver driverChecker = lib.startBrowserChecker(currentLanguage);
                 WebDriverWait wait = new WebDriverWait(driverChecker, Duration.ofSeconds(30));
-                // wait.until(ExpectedConditions.invisibilityOfElementLocated(By.id("processing")));
-                Text text;
-                List<WebElement> mistakes, correct;
+                try {
+                    Thread.sleep(5000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+
+                Text text, textError;
 
                 while (true) {
-                    for (Element webElement : webElements) {
-                        if (webElement.getState().equals("waiting")) {
+                    for (int e = 0; e < myElements.size(); e++) {
+                        if (myElements.get(e).getState().equals("waiting")) {
                             try {
-                                Thread.sleep(6000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
                             }
+                            driverChecker.switchTo().defaultContent();
                             System.out.println("get the iframe ");
-                            wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='TextArea']//iframe")));
-
-                            WebElement iframe = driverChecker.findElement(By.xpath("//div[@id='TextArea']//iframe"));
+                            WebElement iframe = wait.until(ExpectedConditions.visibilityOfElementLocated(By.xpath("//div[@id='TextArea']//iframe")));
                             // switch to iframe
                             driverChecker.switchTo().frame(iframe);
                             WebElement textArea = driverChecker.findElement(By.tagName("p"));
                             textArea.clear();
-                            textArea.sendKeys(webElement.getText());
+                            textArea.sendKeys(myElements.get(e).getText());
                             //switch to main
                             driverChecker.switchTo().defaultContent();
                             if (currentLanguage.equals("FR"))
@@ -193,68 +154,70 @@ public class FXMLDocumentController implements Initializable {
                             else if (currentLanguage.equals("EN"))
                                 driverChecker.findElement(By.xpath("//div[@class='button'][contains(.,'Check')]")).click();
                             try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
                             }
                             //switch to iframe
                             driverChecker.switchTo().frame(iframe);
                             try {
-                                Thread.sleep(2000);
-                            } catch (InterruptedException e) {
-                                e.printStackTrace();
+                                Thread.sleep(1000);
+                            } catch (InterruptedException ex) {
+                                ex.printStackTrace();
                             }
                             //print after check
                             System.out.println(driverChecker.findElement(By.tagName("p")).getAttribute("innerHTML"));
                             // get number of errors
 
+
                             int numberOfErrors = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']")).size();
-                            System.out.println("number of errors => " + numberOfErrors);
+                            System.out.println("number of errors found 11 => " + numberOfErrors);
 
                             if (numberOfErrors == 0) {
-                                webElement.setState("correct");
+                                myElements.get(e).setState("correct");
+                                driverChecker.switchTo().defaultContent();
                             } else {
-                                webElement.setState("wrong");
-                                List<WebElement> listOfErrors = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']"));
-                                for (int er = 0; er < listOfErrors.size(); er++) {
+                                myElements.get(e).setState("wrong");
+                                List<WebElement> listOfErrorsElement = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']"));
+                                System.out.println("number of errors true error fro loop => " + numberOfErrors);
+
+
+                                // span[@class='s-bl'] or //span[@class='s-ve'] or//span[@class='s-or']"));
+                                for (int er = 0; er < listOfErrorsElement.size(); er++) {
+
                                     Error error = new Error();
-                                    String typeOfError = listOfErrors.get(er).getAttribute("class");
+                                    WebElement TempElement = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']")).get(er);
+                                    String typeOfError = TempElement.getAttribute("class");
                                     if (currentLanguage.equals("FR")) {
-                                        if (typeOfError.equals("s-rg")) {
-                                            error.setType("red");
-                                        } else if (typeOfError.equals("s-bl")) {
-                                            error.setType("bleu");
-                                        } else if (typeOfError.equals("s-ve")) {
-                                            error.setType("yellow");
-                                        } else if (typeOfError.equals("s-or")) {
-                                            error.setType("pink");
+                                        switch (typeOfError) {
+                                            case "s-rg" -> error.setType("red");
+                                            case "s-bl" -> error.setType("bleu");
+                                            case "s-ve" -> error.setType("yellow");
+                                            case "s-or" -> error.setType("pink");
                                         }
                                     } else if (currentLanguage.equals("EN")) {
-                                        if (typeOfError.equals("s-rg")) {
-                                            error.setType("yellow");
-                                        } else if (typeOfError.equals("s-bl")) {
-                                            error.setType("bleu");
-                                        } else if (typeOfError.equals("s-ve")) {
-                                            error.setType("yellow");
-                                        } else if (typeOfError.equals("s-or")) {
-                                            error.setType("pink");
+                                        switch (typeOfError) {
+                                            case "s-rg" -> error.setType("yellow");
+                                            case "s-bl" -> error.setType("bleu");
+                                            case "s-ve" -> error.setType("yellow");
+                                            case "s-or" -> error.setType("pink");
                                         }
                                     }
-                                    driverChecker.findElement(By.id(listOfErrors.get(er).getAttribute("id"))).click();
+                                    driverChecker.findElement(By.id(listOfErrorsElement.get(er).getAttribute("id"))).click();
                                     try {
                                         Thread.sleep(1000);
-                                    } catch (InterruptedException e) {
-                                        e.printStackTrace();
+                                    } catch (InterruptedException ex) {
+                                        ex.printStackTrace();
                                     }
-                                    if (driverChecker.findElements(By.xpath("//div[@class='Cor-PopupPanelExpSol open']")).size()>0){
+                                    driverChecker.switchTo().defaultContent();
+                                    if (driverChecker.findElements(By.xpath("//div[contains(@class,'Cor-PopupPanelExpSol') and contains(@class, 'open')]")).size() > 0) {
                                         String var = lib.getTextHTML(driverChecker.findElement(By.xpath("//div[@class='Cor-PopupPanelExpSol open']")).getAttribute("innerHTML"));
                                         System.out.println("issue with element " + var);
                                         String var2 = lib.getTextHTML(driverChecker.findElement(By.xpath("//div[@class='Cor-PopupPanelExpSol open']")).getAttribute("innerHTML"));
                                         System.out.println("issue explained " + var2);
                                         error.setExplication(var2);
                                         error.setCorrection(var);
-                                    }
-                                    else {
+                                    } else {
                                         String var = lib.getTextHTML(driverChecker.findElement(By.xpath("//div[@class='Cor-ListSolTr']")).getAttribute("innerHTML"));
                                         System.out.println("issue with element " + var);
                                         String var2 = lib.getTextHTML(driverChecker.findElement(By.xpath("//div[@class='Cor-PopupPanelExpSol open']")).getAttribute("innerHTML"));
@@ -262,62 +225,76 @@ public class FXMLDocumentController implements Initializable {
                                         error.setExplication(var2);
                                         error.setCorrection(var);
                                     }
-
-                                    webElement.addError(error);
+                                    myElements.get(e).addError(error);
+                                    driverChecker.switchTo().frame(iframe);
                                 }
+                                //  if (listOfErrors.size() == 0)
+                            }
+                            // updating GUI
+
+                            int numTotal = myElements.size();
+                            int numCorrect = 0, numPink = 0, numOrange = 0, numBleu = 0, numYellow = 0;
+                            Platform.runLater(() -> areaResult.getChildren().clear());
+
+                            for (int w = 0; w < myElements.size(); w++) {
+                                String myString;
+                                myString = "\n " + myElements.elementAt(w).getText();
+
+                                text = new Text(myString);
+                                text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+                                if (myElements.elementAt(w).getState().equals("correct")) {
+                                    text.setFill(Color.web("#2cff00"));
+                                    numCorrect++;
+                                } else if (myElements.elementAt(w).getState().equals("waiting")) {
+                                    text.setFill(Color.web("#ffffff"));
+                                } else if (myElements.elementAt(w).getState().equals("wrong")) {
+                                    Vector<Error> myErrors = myElements.elementAt(w).getErrors();
+                                    for (Error myError : myErrors) {
+                                        textError = new Text();
+                                        textError.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+                                        textError.setText(myError.textFragment + " =>\n " + "Correction : " + myError.getCorrection() + "\n" + "Explication :" + myError.getExplication());
+                                        if (myError.getType().equals("pink")) {
+                                            textError.setFill(Color.web("#f64dff"));
+                                            numPink++;
+                                        } else if (myError.getType().equals("orange")) {
+                                            textError.setFill(Color.web("#e86868"));
+                                            numOrange++;
+                                        } else if (myError.getType().equals("yellow")) {
+                                            textError.setFill(Color.web("#ddb83e"));
+                                            numYellow++;
+                                        } else if (myError.getType().equals("bleu")) {
+                                            textError.setFill(Color.web("#5e80fc"));
+                                            numBleu++;
+                                        }
+                                        Text tempText = textError;
+                                        Platform.runLater(() -> {
+                                            areaResult.getChildren().add(tempText);
+                                        });
+                                    }
+                                }
+
+                                Text tempText = text;
+                                //update new Gui
+                                String newLabelGreen = String.valueOf(numCorrect);
+                                String newLabelWhite = String.valueOf(numTotal);
+                                String newLabelPink = String.valueOf(numPink);
+                                String newLabelOrange = String.valueOf(numOrange);
+                                String newLabelBleu = String.valueOf(numBleu);
+                                String newLabelYellow = String.valueOf(numYellow);
+                                Platform.runLater(() -> {
+                                    areaResult.getChildren().add(tempText);
+                                    labelGreen.setText("Correcte : " + newLabelGreen);
+                                    labelWhite.setText("Total : " + newLabelWhite);
+                                    labelPink.setText("À Examiner / Suggestions : " + newLabelPink);
+                                    labelOrange.setText("Orthographe : " + newLabelOrange);
+                                    labelBleu.setText("Topographie / ponctuation : " + newLabelBleu);
+                                    labelYellow.setText("Grammaire / Verbes : " + newLabelYellow);
+                                });
                             }
                         }
                     }
 
-                    Platform.runLater(() -> areaResult.getChildren().clear());
-                    int numTotal = webElements.size();
-                    int numCorrect = 0, numPink = 0, numOrange = 0, numBleu = 0, numYellow = 0;
-                    for (int w = 0; w < webElements.size(); w++) {
-                        String myString;
-                        myString = "\n " + webElements.elementAt(w).getText();
-                        if (webElements.elementAt(w).getState().equals("wrong")) {
-                        //    myString = myString + " => " + webElements.elementAt(w).getSuggest();
-                        }
 
-                        text = new Text(myString);
-                        text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
-                        if (webElements.elementAt(w).getState().equals("typo")) {
-                            text.setFill(Color.web("#5e80fc"));
-                        } else if (webElements.elementAt(w).getState().equals("correct")) {
-                            text.setFill(Color.web("#2cff00"));
-                            numCorrect++;
-                        } else if (webElements.elementAt(w).getState().equals("ortographe")) {
-                            text.setFill(Color.web("#e86868"));
-                            numOrange++;
-                        } else if (webElements.elementAt(w).getState().equals("grammaire")) {
-                            text.setFill(Color.web("#ddb83e"));
-                            numCorrect++;
-                        } else if (webElements.elementAt(w).getState().equals("examiner")) {
-                            text.setFill(Color.web("#f64dff"));
-                            numOrange++;
-                        } else if (webElements.elementAt(w).getState().equals("waiting")) {
-                            text.setFill(Color.web("#ffffff"));
-                            numOrange++;
-                        }
-                        Text tempText = text;
-                        //update new Gui
-                        String newLabelGreen = String.valueOf(numCorrect);
-                        String newLabelWhite = String.valueOf(numTotal);
-                        String newLabelPink = String.valueOf(numPink);
-                        String newLabelOrange = String.valueOf(numOrange);
-                        String newLabelBleu = String.valueOf(numBleu);
-                        String newLabelYellow = String.valueOf(numYellow);
-
-                        Platform.runLater(() -> {
-                            areaResult.getChildren().add(tempText);
-                            labelGreen.setText("Correcte : " + newLabelGreen);
-                            labelWhite.setText("Total : " + newLabelWhite);
-                            labelPink.setText("À Examiner / Suggestions : " + newLabelPink);
-                            labelOrange.setText("Orthographe : " + newLabelOrange);
-                            labelBleu.setText("Topographie / ponctuation : " + newLabelBleu);
-                            labelYellow.setText("Grammaire / Verbes : " + newLabelYellow);
-                        });
-                    }
                 }
                 //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
             });
