@@ -29,8 +29,6 @@ public class Element {
         this.errors.add(error);
     }
 
-
-
     public void setText(String text) {
         this.text = text;
     }
@@ -43,15 +41,17 @@ public class Element {
     public int getNumberError() {
         return this.errors.size();
     }
+
     public String getText() {
         return this.text;
     }
+
     public String getState() {
         return this.state;
     }
-    public Vector<Error> getErrors () {
+
+    public Vector<Error> getErrors() {
         return this.errors;
     }
-
 
 }

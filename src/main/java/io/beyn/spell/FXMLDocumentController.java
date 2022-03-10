@@ -128,9 +128,7 @@ public class FXMLDocumentController implements Initializable {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
                 Text text, textError;
-
                 while (true) {
                     for (int e = 0; e < myElements.size(); e++) {
                         if (myElements.get(e).getState().equals("waiting")) {
@@ -169,7 +167,6 @@ public class FXMLDocumentController implements Initializable {
                             System.out.println(driverChecker.findElement(By.tagName("p")).getAttribute("innerHTML"));
                             // get number of errors
 
-
                             int numberOfErrors = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']")).size();
                             System.out.println("number of errors found 11 => " + numberOfErrors);
 
@@ -180,26 +177,22 @@ public class FXMLDocumentController implements Initializable {
                                 myElements.get(e).setState("wrong");
                                 List<WebElement> listOfErrorsElement = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']"));
                                 System.out.println("number of errors true error fro loop => " + numberOfErrors);
-
-
                                 // span[@class='s-bl'] or //span[@class='s-ve'] or//span[@class='s-or']"));
                                 for (int er = 0; er < listOfErrorsElement.size(); er++) {
-
                                     Error error = new Error();
                                     WebElement TempElement = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']")).get(er);
                                     String typeOfError = TempElement.getAttribute("class");
                                     if (currentLanguage.equals("FR")) {
                                         switch (typeOfError) {
-                                            case "s-rg" -> error.setType("red");
+                                            case "s-rg" -> error.setType("orange");
                                             case "s-bl" -> error.setType("bleu");
                                             case "s-ve" -> error.setType("yellow");
                                             case "s-or" -> error.setType("pink");
                                         }
                                     } else if (currentLanguage.equals("EN")) {
                                         switch (typeOfError) {
-                                            case "s-rg" -> error.setType("yellow");
+                                            case "s-rg", "s-ve" -> error.setType("yellow");
                                             case "s-bl" -> error.setType("bleu");
-                                            case "s-ve" -> error.setType("yellow");
                                             case "s-or" -> error.setType("pink");
                                         }
                                     }
@@ -220,6 +213,7 @@ public class FXMLDocumentController implements Initializable {
                                     } else {
                                         String var = lib.getTextHTML(driverChecker.findElement(By.xpath("//div[@class='Cor-ListSolTr']")).getAttribute("innerHTML"));
                                         System.out.println("issue with element " + var);
+                                        //error happens here
                                         String var2 = lib.getTextHTML(driverChecker.findElement(By.xpath("//div[@class='Cor-PopupPanelExpSol open']")).getAttribute("innerHTML"));
                                         System.out.println("issue explained " + var2);
                                         error.setExplication(var2);
@@ -238,21 +232,34 @@ public class FXMLDocumentController implements Initializable {
 
                             for (int w = 0; w < myElements.size(); w++) {
                                 String myString;
-                                myString = "\n " + myElements.elementAt(w).getText();
+                                myString =  myElements.elementAt(w).getText();
 
-                                text = new Text(myString);
-                                text.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+
                                 if (myElements.elementAt(w).getState().equals("correct")) {
+                                    text = new Text();
+                                    text.setText(myString + "\n");
+                                    text.setStyle(" -fx-font-size: 14pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
                                     text.setFill(Color.web("#2cff00"));
                                     numCorrect++;
+                                    Text tempText = text;
+                                    Platform.runLater(() -> {
+                                        areaResult.getChildren().add(tempText);
+                                    });
                                 } else if (myElements.elementAt(w).getState().equals("waiting")) {
+                                    text = new Text();
+                                    text.setText(myString + "\n");
+                                    text.setStyle(" -fx-font-size: 14pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
                                     text.setFill(Color.web("#ffffff"));
+                                    Text tempText = text;
+                                    Platform.runLater(() -> {
+                                        areaResult.getChildren().add(tempText);
+                                    });
                                 } else if (myElements.elementAt(w).getState().equals("wrong")) {
                                     Vector<Error> myErrors = myElements.elementAt(w).getErrors();
                                     for (Error myError : myErrors) {
                                         textError = new Text();
-                                        textError.setStyle(" -fx-font-size: 12pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
-                                        textError.setText(myError.textFragment + " =>\n " + "Correction : " + myError.getCorrection() + "\n" + "Explication :" + myError.getExplication());
+                                        textError.setStyle("-fx-font-size: 14pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
+                                        textError.setText("\n *** "+myError.getTextFragment() + " =>\n " + "Correction : " + myError.getCorrection() + "\n" + "Explication :" + myError.getExplication() + "\n");
                                         if (myError.getType().equals("pink")) {
                                             textError.setFill(Color.web("#f64dff"));
                                             numPink++;
@@ -272,8 +279,6 @@ public class FXMLDocumentController implements Initializable {
                                         });
                                     }
                                 }
-
-                                Text tempText = text;
                                 //update new Gui
                                 String newLabelGreen = String.valueOf(numCorrect);
                                 String newLabelWhite = String.valueOf(numTotal);
@@ -282,7 +287,6 @@ public class FXMLDocumentController implements Initializable {
                                 String newLabelBleu = String.valueOf(numBleu);
                                 String newLabelYellow = String.valueOf(numYellow);
                                 Platform.runLater(() -> {
-                                    areaResult.getChildren().add(tempText);
                                     labelGreen.setText("Correcte : " + newLabelGreen);
                                     labelWhite.setText("Total : " + newLabelWhite);
                                     labelPink.setText("À Examiner / Suggestions : " + newLabelPink);
