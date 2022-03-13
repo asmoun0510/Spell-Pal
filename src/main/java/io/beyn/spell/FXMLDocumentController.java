@@ -1,5 +1,7 @@
 package io.beyn.spell;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.net.URL;
 import java.time.Duration;
 import java.util.List;
@@ -30,8 +32,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
 public class FXMLDocumentController implements Initializable {
 
     @FXML
-    private AnchorPane ForeignPan;
-    @FXML
     private TextFlow areaResult;
     @FXML
     private Button buttonAR;
@@ -41,6 +41,8 @@ public class FXMLDocumentController implements Initializable {
     private Button buttonFR;
     @FXML
     private Button buttonResult;
+    @FXML
+    private Button buttonStop;
     @FXML
     private Button buttonRun;
     @FXML
@@ -58,13 +60,20 @@ public class FXMLDocumentController implements Initializable {
     @FXML
     private Label labelYellow;
 
-
     String currentLanguage = "FR";
     Library lib = new Library();
     Vector<Element> myElements = new Vector<>();
 
+    WebDriver driverBrowser, driverChecker;
+    Thread threadBrowse, threadChecker;
+
     @Override
     public void initialize(URL url, ResourceBundle rb) {
+
+        WebDriverManager.chromedriver().browserVersion("99.0.4844.51").setup();
+        buttonStop.setVisible(false);
+        buttonStop.setDisable(true);
+        buttonResult.setDisable(true);
         // setting the icons for language buttons
         ImageView imageViewFR = new ImageView(getClass().getResource("french_icon.png").toExternalForm());
         ImageView imageViewEN = new ImageView(getClass().getResource("english_icon.png").toExternalForm());
@@ -72,7 +81,6 @@ public class FXMLDocumentController implements Initializable {
         buttonFR.setGraphic(imageViewFR);
         buttonEN.setGraphic(imageViewEN);
         buttonAR.setGraphic(imageViewAR);
-        WebDriverManager.chromedriver().browserVersion("99.0.4844.51").setup();
         labelGreen.setText("Correcte : 0");
         labelWhite.setText("Total : 0");
         labelPink.setText("À Examiner / Suggestions : 0");
@@ -82,25 +90,62 @@ public class FXMLDocumentController implements Initializable {
     }
 
     @FXML
-    private void Event(ActionEvent event) {
+    private void Event(ActionEvent event) throws IOException {
         if (event.getSource() == buttonFR) {
-            labelLanguage.setText("Language selectioné :  FR");
+            labelLanguage.setText("Langue sélectionnée :  FR");
             currentLanguage = "FR";
         } else if (event.getSource() == buttonEN) {
-            labelLanguage.setText("Language selectioné :  EN");
+            labelLanguage.setText("Langue sélectionnée :  EN");
             currentLanguage = "EN";
         }
         if (event.getSource() == buttonAR) {
-            labelLanguage.setText("Language selectioné :  AR");
+            labelLanguage.setText("Langue sélectionnée :  AR");
             currentLanguage = "AR";
         }
-        if (event.getSource() == buttonResult) {
 
+        if (event.getSource() == buttonStop) {
+            boolean exeption = false;
+            try {
+                threadBrowse.stop();
+                threadChecker.stop();
+                driverChecker.close();
+                driverBrowser.close();
+            } catch (Exception ex) {
+                System.out.println(ex);
+                exeption = true;
+            }
+            if (!exeption) {
+                buttonStop.setVisible(false);
+                buttonStop.setDisable(true);
+                buttonRun.setDisable(false);
+                buttonRun.setVisible(true);
+                buttonAR.setDisable(false);
+                buttonEN.setDisable(false);
+                buttonFR.setDisable(false);
+            }
+        }
+
+        if (event.getSource() == buttonResult) {
+            FileWriter fWriter = new FileWriter("resultat.txt", true);
+            //summary
+            fWriter.write("Files in Java might be tricky, but it is fun enough!" + "\n");
+            for (int s = 0; s < myElements.size(); s++) {
+                fWriter.write("Files in Java might be tricky, but it is fun enough!" + "\n");
+            }
+
+            fWriter.close();
         } else if (event.getSource() == buttonRun) {
-            Thread threadBrowse = new Thread(() -> {
+            buttonStop.setVisible(true);
+            buttonStop.setDisable(false);
+            buttonRun.setDisable(true);
+            buttonRun.setVisible(false);
+            buttonAR.setDisable(true);
+            buttonEN.setDisable(true);
+            buttonFR.setDisable(true);
+            threadBrowse = new Thread(() -> {
                 //  start browser for user
                 String newPage, contentPage;
-                WebDriver driverBrowser = lib.initilizeBrowser("www.google.com");
+                driverBrowser = lib.initilizeBrowser("www.google.com");
                 String initialPage = lib.getSourcePage(driverBrowser);
                 while (true) {
                     try {
@@ -119,9 +164,8 @@ public class FXMLDocumentController implements Initializable {
             });
 
             //  start browser based on language chosen by user and visit
-            Thread threadChecker = new Thread(() -> {
-
-                WebDriver driverChecker = lib.startBrowserChecker(currentLanguage);
+            threadChecker = new Thread(() -> {
+                driverChecker = lib.startBrowserChecker(currentLanguage);
                 WebDriverWait wait = new WebDriverWait(driverChecker, Duration.ofSeconds(30));
                 try {
                     Thread.sleep(5000);
@@ -196,6 +240,7 @@ public class FXMLDocumentController implements Initializable {
                                             case "s-or" -> error.setType("pink");
                                         }
                                     }
+                                    error.setTextFragment(driverChecker.findElement(By.id(listOfErrorsElement.get(er).getAttribute("id"))).getText());
                                     driverChecker.findElement(By.id(listOfErrorsElement.get(er).getAttribute("id"))).click();
                                     try {
                                         Thread.sleep(1000);
@@ -232,8 +277,7 @@ public class FXMLDocumentController implements Initializable {
 
                             for (int w = 0; w < myElements.size(); w++) {
                                 String myString;
-                                myString =  myElements.elementAt(w).getText();
-
+                                myString = myElements.elementAt(w).getText();
 
                                 if (myElements.elementAt(w).getState().equals("correct")) {
                                     text = new Text();
@@ -259,7 +303,7 @@ public class FXMLDocumentController implements Initializable {
                                     for (Error myError : myErrors) {
                                         textError = new Text();
                                         textError.setStyle("-fx-font-size: 14pt;-fx-font-family: \"Ebrima\";-fx-font-weight: bold;");
-                                        textError.setText("\n *** "+myError.getTextFragment() + " =>\n " + "Correction : " + myError.getCorrection() + "\n" + "Explication :" + myError.getExplication() + "\n");
+                                        textError.setText("\n *** " + myError.getTextFragment() + " =>\n " + "Correction : " + myError.getCorrection() + "\n" + "Explication :" + myError.getExplication() + "\n");
                                         if (myError.getType().equals("pink")) {
                                             textError.setFill(Color.web("#f64dff"));
                                             numPink++;
@@ -297,8 +341,6 @@ public class FXMLDocumentController implements Initializable {
                             }
                         }
                     }
-
-
                 }
                 //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
             });

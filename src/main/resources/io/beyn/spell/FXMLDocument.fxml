@@ -59,7 +59,7 @@
             <Font name="Arial Bold" size="24.0" />
          </font>
       </Button>
-      <Label fx:id="labelLanguage" alignment="CENTER" contentDisplay="CENTER" layoutX="322.0" layoutY="179.0" prefHeight="41.0" prefWidth="284.0" text="Language sélectionné :  FR" textAlignment="CENTER" textFill="WHITE">
+      <Label fx:id="labelLanguage" alignment="CENTER" contentDisplay="CENTER" layoutX="322.0" layoutY="179.0" prefHeight="41.0" prefWidth="284.0" text="Langue sélectionnée :  FR" textAlignment="CENTER" textFill="WHITE">
          <font>
             <Font name="Cambria Bold" size="21.0" />
          </font>
@@ -89,5 +89,10 @@
             <Font name="System Bold" size="12.0" />
          </font>
       </Label>
+      <Button fx:id="buttonStop" alignment="CENTER" contentDisplay="CENTER" layoutX="446.0" layoutY="68.0" mnemonicParsing="false" onAction="#Event" prefHeight="63.0" prefWidth="164.0" stylesheets="@styleRun.css" text="Arrêter" textAlignment="CENTER" textFill="WHITE">
+         <font>
+            <Font name="Arial Bold" size="24.0" />
+         </font>
+      </Button>
     </children>
 </AnchorPane>
