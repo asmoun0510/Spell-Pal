@@ -3,7 +3,9 @@ package io.beyn.spell;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.time.Duration;
+import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
@@ -16,7 +18,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -30,7 +31,6 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @author asmou
  */
 public class FXMLDocumentController implements Initializable {
-
     @FXML
     private TextFlow areaResult;
     @FXML
@@ -63,13 +63,11 @@ public class FXMLDocumentController implements Initializable {
     String currentLanguage = "FR";
     Library lib = new Library();
     Vector<Element> myElements = new Vector<>();
-
     WebDriver driverBrowser, driverChecker;
     Thread threadBrowse, threadChecker;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-
         WebDriverManager.chromedriver().browserVersion("99.0.4844.51").setup();
         buttonStop.setVisible(false);
         buttonStop.setDisable(true);
@@ -97,13 +95,10 @@ public class FXMLDocumentController implements Initializable {
         } else if (event.getSource() == buttonEN) {
             labelLanguage.setText("Langue sélectionnée :  EN");
             currentLanguage = "EN";
-        }
-        if (event.getSource() == buttonAR) {
+        } else if (event.getSource() == buttonAR) {
             labelLanguage.setText("Langue sélectionnée :  AR");
             currentLanguage = "AR";
-        }
-
-        if (event.getSource() == buttonStop) {
+        } else if (event.getSource() == buttonStop) {
             boolean exeption = false;
             try {
                 threadBrowse.stop();
@@ -123,17 +118,50 @@ public class FXMLDocumentController implements Initializable {
                 buttonEN.setDisable(false);
                 buttonFR.setDisable(false);
             }
-        }
-
-        if (event.getSource() == buttonResult) {
+        } else if (event.getSource() == buttonResult) {
             FileWriter fWriter = new FileWriter("resultat.txt", true);
-            //summary
-            fWriter.write("Files in Java might be tricky, but it is fun enough!" + "\n");
-            for (int s = 0; s < myElements.size(); s++) {
-                fWriter.write("Files in Java might be tricky, but it is fun enough!" + "\n");
+            int white = myElements.size(), green = 0, pink = 0, bleu = 0, orange = 0, yellow = 0;
+            for (int m = 0; m < myElements.size(); m++) {
+                for (int e = 0; e < myElements.get(m).getErrors().size(); e++) {
+                    if (myElements.get(m).getErrors().get(e).getType().equals("pink")) pink++;
+                    else if (myElements.get(m).getErrors().get(e).getType().equals("yellow")) yellow++;
+                    else if (myElements.get(m).getErrors().get(e).getType().equals("orange")) orange++;
+                    else if (myElements.get(m).getErrors().get(e).getType().equals("bleu")) bleu++;
+                    else green++;
+                }
             }
+            //summary
+            fWriter.write("----------------Resultats : \n");
+            fWriter.write("Date d'execution : " + new SimpleDateFormat("dd-MM-yyyy").format(new Date()) + "\n");
+            fWriter.write("Langue d'execution : " + currentLanguage + "\n");
+            fWriter.write("Nombre Total des elements verifieé : " + white + "\n");
+            fWriter.write("Nombre Total des elements corrrectes : " + green + "\n");
+            fWriter.write("À Examiner / Suggestions : " + pink + "\n");
+            fWriter.write("Orthographe : " + orange + "\n");
+            fWriter.write("Topographie / ponctuation : " + bleu + "\n");
+            fWriter.write("Grammaire / Verbes : " + yellow + "\n \n");
 
+            if (pink + yellow + bleu + orange > 0) {
+                //List of Errors
+                fWriter.write("----------------Liste des erreurs trouvé : \n");
+                for (int m = 0; m < myElements.size(); m++) {
+                    String errorText = "";
+                    for (int e = 0; e < myElements.get(m).getErrors().size(); e++) {
+                        errorText = errorText + "\t'" + myElements.get(m).getErrors().get(e).textFragment +
+                                "'\n\t\t Type : " + myElements.get(m).getErrors().get(e).getType() +
+                                "'\n\t\t Correction : " + myElements.get(m).getErrors().get(e).getCorrection() +
+                                "'\n\t\t Explication :" + myElements.get(m).getErrors().get(e).getExplication() + "\n";
+                    }
+                    if (myElements.get(m).getErrors().size() > 0) {
+                        errorText = m + " : " + myElements.get(m).getText() + "\n";
+                        fWriter.write(errorText);
+                    }
+                }
+            } else {
+                fWriter.write("Aucune erreurs touvé");
+            }
             fWriter.close();
+
         } else if (event.getSource() == buttonRun) {
             buttonStop.setVisible(true);
             buttonStop.setDisable(false);
@@ -159,7 +187,6 @@ public class FXMLDocumentController implements Initializable {
                     } catch (Exception ex) {
                         ex.printStackTrace();
                     }
-
                 }
             });
 
@@ -270,15 +297,12 @@ public class FXMLDocumentController implements Initializable {
                                 //  if (listOfErrors.size() == 0)
                             }
                             // updating GUI
-
                             int numTotal = myElements.size();
                             int numCorrect = 0, numPink = 0, numOrange = 0, numBleu = 0, numYellow = 0;
                             Platform.runLater(() -> areaResult.getChildren().clear());
-
                             for (int w = 0; w < myElements.size(); w++) {
                                 String myString;
                                 myString = myElements.elementAt(w).getText();
-
                                 if (myElements.elementAt(w).getState().equals("correct")) {
                                     text = new Text();
                                     text.setText(myString + "\n");
@@ -344,11 +368,8 @@ public class FXMLDocumentController implements Initializable {
                 }
                 //   System.out.println("changed "+ lib.getContentPage(driverBrowser) );
             });
-
-
             threadChecker.start();
             threadBrowse.start();
-
         }
     }
 
