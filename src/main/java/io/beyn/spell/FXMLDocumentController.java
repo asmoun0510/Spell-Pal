@@ -1,5 +1,4 @@
 package io.beyn.spell;
-
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -9,7 +8,6 @@ import java.util.Date;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.Vector;
-
 import io.github.bonigarcia.wdm.WebDriverManager;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -193,7 +191,7 @@ public class FXMLDocumentController implements Initializable {
             //  start browser based on language chosen by user and visit
             threadChecker = new Thread(() -> {
                 driverChecker = lib.startBrowserChecker(currentLanguage);
-                WebDriverWait wait = new WebDriverWait(driverChecker, Duration.ofSeconds(30));
+                WebDriverWait wait = new WebDriverWait(driverChecker, Duration.ofSeconds(10));
                 try {
                     Thread.sleep(5000);
                 } catch (InterruptedException e) {
@@ -204,7 +202,7 @@ public class FXMLDocumentController implements Initializable {
                     for (int e = 0; e < myElements.size(); e++) {
                         if (myElements.get(e).getState().equals("waiting")) {
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(500);
                             } catch (InterruptedException ex) {
                                 ex.printStackTrace();
                             }
@@ -218,28 +216,29 @@ public class FXMLDocumentController implements Initializable {
                             textArea.sendKeys(myElements.get(e).getText());
                             //switch to main
                             driverChecker.switchTo().defaultContent();
-                            if (currentLanguage.equals("FR"))
+                            if (currentLanguage.equals("FR")){
+                                wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='button'][contains(.,'Vérifier')]")));
                                 driverChecker.findElement(By.xpath("//div[@class='button'][contains(.,'Vérifier')]")).click();
-                            else if (currentLanguage.equals("EN"))
-                                driverChecker.findElement(By.xpath("//div[@class='button'][contains(.,'Check')]")).click();
-                            try {
-                                Thread.sleep(1000);
-                            } catch (InterruptedException ex) {
-                                ex.printStackTrace();
                             }
+
+                            else if (currentLanguage.equals("EN")) {
+                                wait.until(ExpectedConditions.elementToBeClickable(By.xpath("//div[@class='button'][contains(.,'Check')]")));
+                                driverChecker.findElement(By.xpath("//div[@class='button'][contains(.,'Check')]")).click();
+                            }
+
+
                             //switch to iframe
                             driverChecker.switchTo().frame(iframe);
+
+                            //print after check
+                            System.out.println(driverChecker.findElement(By.tagName("p")).getAttribute("innerHTML"));
+                            //get number of errors
                             try {
-                                Thread.sleep(1000);
+                                Thread.sleep(500);
                             } catch (InterruptedException ex) {
                                 ex.printStackTrace();
                             }
-                            //print after check
-                            System.out.println(driverChecker.findElement(By.tagName("p")).getAttribute("innerHTML"));
-                            // get number of errors
-
                             int numberOfErrors = driverChecker.findElements(By.xpath("//span[@class='s-rg'] | //span[@class='s-bl'] | //span[@class='s-ve'] | //span[@class='s-or']")).size();
-                            System.out.println("number of errors found 11 => " + numberOfErrors);
 
                             if (numberOfErrors == 0) {
                                 myElements.get(e).setState("correct");
@@ -269,11 +268,7 @@ public class FXMLDocumentController implements Initializable {
                                     }
                                     error.setTextFragment(driverChecker.findElement(By.id(listOfErrorsElement.get(er).getAttribute("id"))).getText());
                                     driverChecker.findElement(By.id(listOfErrorsElement.get(er).getAttribute("id"))).click();
-                                    try {
-                                        Thread.sleep(1000);
-                                    } catch (InterruptedException ex) {
-                                        ex.printStackTrace();
-                                    }
+
                                     driverChecker.switchTo().defaultContent();
                                     if (driverChecker.findElements(By.xpath("//div[contains(@class,'Cor-PopupPanelExpSol') and contains(@class, 'open')]")).size() > 0) {
                                         String var = lib.getTextHTML(driverChecker.findElement(By.xpath("//div[@class='Cor-PopupPanelExpSol open']")).getAttribute("innerHTML"));
