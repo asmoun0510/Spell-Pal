@@ -1,4 +1,4 @@
-package io.beyn.spell;
+package io.pal.spell;
 
 import java.time.Duration;
 import java.util.Vector;

@@ -1,4 +1,4 @@
-package io.beyn.spell;
+package io.pal.spell;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
@@ -15,7 +15,9 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
@@ -29,6 +31,10 @@ import org.openqa.selenium.support.ui.WebDriverWait;
  * @author asmou
  */
 public class FXMLDocumentController implements Initializable {
+    @FXML
+    private AnchorPane ForeignPan;
+    @FXML
+    private ScrollPane myScrollPane;
     @FXML
     private TextFlow areaResult;
     @FXML
@@ -63,6 +69,8 @@ public class FXMLDocumentController implements Initializable {
     Vector<Element> myElements = new Vector<>();
     WebDriver driverBrowser, driverChecker;
     Thread threadBrowse, threadChecker;
+
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {

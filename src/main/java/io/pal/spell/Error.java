@@ -1,4 +1,4 @@
-package io.beyn.spell;
+package io.pal.spell;
 
 public class Error {
     String type = "";
